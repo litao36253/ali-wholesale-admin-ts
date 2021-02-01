@@ -1,19 +1,52 @@
 <template>
   <div class="dict-wrap">
-    <a-table :dataSource="data" rowKey="_id" loading>
-      <a-table-column key="code" title="字典编号"></a-table-column>
-      <a-table-column key="name" title="字典名称"></a-table-column>
-      <a-table-column key="type" title="字典分类"></a-table-column>
-      <a-table-column key="edit_enable" title="维护标识"></a-table-column>
-      <a-table-column key="comment" title="备注"></a-table-column>
-    </a-table>
+    <Datagrid
+      datagridId="system.dict"
+      title="数据字典管理"
+      subheading="开发人员维护数据字典"
+      :data="data"
+      :button-list="btnList"
+      single-select
+    >
+      <DatagridColumn prop="code" label="字典编号" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
+      <DatagridColumn prop="name" label="字典名称" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
+      <DatagridColumn prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
+      <DatagridColumn prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></DatagridColumn>
+      <DatagridColumn prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
+    </Datagrid>
+
+    <el-dialog :visible.sync="editDialogVisible">
+      <el-form ref="editForm" :model="editFormModel">
+        <el-form-item label="字典编号" prop="code">
+          <el-input v-model="editFormModel.code" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="字典名称" prop="name">
+          <el-input v-model="editFormModel.name" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="字典分类" prop="type">
+          <el-input v-model="editFormModel.type" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="维护标识" prop="edit_enable">
+          <el-input v-model="editFormModel.edit_enable" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item label="备注" prop="comment">
+          <el-input v-model="editFormModel.comment" placeholder=""></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleSubmitDict">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { Datagrid, DatagridColumn } from '@/components/datagrid/datagrid'
 
 export default {
   name: 'system.dict',
+  components: { Datagrid, DatagridColumn },
   data () {
     return {
       data: [],
@@ -24,14 +57,26 @@ export default {
         type: '',
         edit_enable: '',
         comment: ''
-      }
+      },
+      btnList: [
+        {
+          text: '新增字典',
+          handler: () => {
+            this.editDialogVisible = true
+            this.$nextTick(() => {
+              this.$refs.editForm.resetFields()
+            })
+          }
+        }
+      ]
     }
   },
   created () {
     const database = uniCloud.database()
     database.collection('uni-dict').get().then(res => {
-      if (!res.code) {
-        this.data = res.data
+      const { result } = res
+      if (!result.code) {
+        this.data = result.data
       }
     })
   },
@@ -48,10 +93,5 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-  .dict-wrap {
-    position: relative;
-    height: 100%;
-    background: #fff;
-  }
+<style>
 </style>
