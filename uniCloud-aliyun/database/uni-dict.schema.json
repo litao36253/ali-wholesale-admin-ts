@@ -1,0 +1,77 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": ["code", "name", "edit_enable", "type"],
+	"permission": {
+		"read": true,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"code": {
+			"bsonType": "string",
+			"title": "字典代码",
+			"description": "字典代码，不允许重复",
+			"trim": "both"
+		},
+		"name": {
+			"bsonType": "string",
+			"title": "字典名称",
+			"description": "字典名称，不允许重复",
+			"trim": "both"
+		},
+		"type": {
+			"bsonType": "string",
+			"title": "字典分类",
+			"description": "给字典区分类别，方便后期管理",
+			"defaultValue": "0",
+			"enum": [{
+				"text": "系统公用",
+				"value": "0"
+			}, {
+				"text": "商品管理",
+				"value": "1"
+			}]
+		},
+		"edit_enable": {
+			"bsonType": "string",
+			"title": "维护标识",
+			"description": "规定admin角色的维护权限",
+			"defaultValue": "1",
+			"enum": [{
+				"text": "可维护",
+				"value": "1"
+			}, {
+				"text": "可改不可删",
+				"value": "2"
+			}, {
+				"text": "不可维护",
+				"value": "3"
+			}]
+		},
+		"comment": {
+			"bsonType": "string",
+			"title": "备注",
+			"description": "备注",
+			"trim": "both"
+		},
+		"is_delete": {
+			"bsonType": "bool",
+			"description": "是否已删除",
+			"defaultValue": false
+		},
+		"last_reviser": {
+			"bsonType": "string",
+			"description": "最后修改人",
+			"foreignKey": "uni-id-users._id"
+		},
+		"update_date": {
+			"bsonType": "timestamp",
+			"description": "最后修改时间"
+		}
+	}
+}

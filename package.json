@@ -56,12 +56,16 @@
     "@dcloudio/uni-quickapp-webview": "^2.0.0-30720210122002",
     "@dcloudio/uni-stat": "^2.0.0-30720210122002",
     "@vue/shared": "^3.0.5",
+    "async-validator": "^3.5.1",
     "core-js": "^3.8.3",
+    "element-ui": "^2.15.0",
     "flyio": "^0.6.14",
+    "nprogress": "^0.2.0",
     "regenerator-runtime": "^0.12.1",
     "vue": "^2.6.12",
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^8.5.1",
+    "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
@@ -85,6 +89,8 @@
     "mini-types": "^0.1.4",
     "miniprogram-api-typings": "^3.2.2",
     "postcss-comment": "^2.0.0",
+    "sass": "^1.32.5",
+    "sass-loader": "^10.1.1",
     "typescript": "^3.9.7",
     "vue-template-compiler": "^2.6.12"
   },
