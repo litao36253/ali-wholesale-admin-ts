@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import VueRouter, { RouteConfig } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '@/store/store'
-import baseServer, { baseApi } from '@/server/base/base.js'
+import baseServer, { baseApi } from '@/server/base/base'
 
 Vue.use(VueRouter)
 
-const routes = []
+const routes: RouteConfig[] = []
 
 // 动态载入所有路由
 const routeModels = require.context('.', false, /^\.\/(?!router\.ts)[^/]+\.js/)

@@ -1,8 +1,8 @@
 import { Message } from 'element-ui'
-import * as api from './api.js'
+import * as api from './api'
 import router from '@/router/router'
 
-export default async (path, data, options = { tips: true }) => {
+export default async (path, data?, options = { tips: true }) => {
   return uniCloud.callFunction({
     name: 'base',
     data: {
@@ -34,7 +34,7 @@ export default async (path, data, options = { tips: true }) => {
       }
     }
     return result
-  }).catch(e => {
+  }).catch(() => {
     Message.error('请求出错，请稍后再试！')
   })
 }

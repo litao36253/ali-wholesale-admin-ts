@@ -13,6 +13,17 @@
       <DatagridColumn prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
       <DatagridColumn prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></DatagridColumn>
       <DatagridColumn prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></DatagridColumn>
+      <DatagridColumn label="操作" min-width="160" fixed="right">
+        <template v-slot="{ row }">
+          <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
+          <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleEdit(row)">修改</el-button>
+          <el-button type="text" :disabled="row.edit_enable === '2' || row.edit_enable === '3'" @click.stop="handleDelete(row)">删除</el-button>
+        </template>
+      </DatagridColumn>
+
+      <template>
+
+      </template>
     </Datagrid>
 
     <el-dialog :visible.sync="editDialogVisible">
@@ -88,10 +99,23 @@ export default {
       }).then(res => {
         console.log(res)
       })
+    },
+    handlerShowDetails (row) {
+
+    },
+    handleEdit (row) {
+
+    },
+    handleDelete (row) {
+
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+  .dict-wrap {
+    background-color: #fff;
+    height: 100%;
+  }
 </style>

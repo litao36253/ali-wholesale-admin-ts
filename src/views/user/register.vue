@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import baseServer, { baseApi } from '@/server/base/base.js'
+import baseServer, { baseApi } from '@/server/base/base'
 
 export default {
   name: 'user.register',
