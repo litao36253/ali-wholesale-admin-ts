@@ -26,10 +26,10 @@
 </template>
 
 <script>
-const styleVariables = {}
 // import styleVariables from '@/uni.scss'
 import SubMenu from './components/sub-menu.vue'
 import MenuItem from './components/menu-item.vue'
+const styleVariables = {}
 
 export default {
   name: 'side-bar',

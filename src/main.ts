@@ -6,8 +6,6 @@ import router from '@/router/router'
 import store from '@/store/store'
 import '@/style/style.scss'
 
-const f = fe
-
 new Vue({
   render: h => h(App),
   router,
