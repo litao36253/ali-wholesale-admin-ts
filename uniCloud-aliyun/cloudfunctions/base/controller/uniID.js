@@ -1,7 +1,7 @@
 const { Controller } = require('uni-cloud-router')
 const uniID = require('uni-id')
 
-module.exports = class uniIDController extends Controller {
+module.exports = class uniIDController extends Controller { 
   // 用户登录
   async login () {
     await this.ctx.validate({
