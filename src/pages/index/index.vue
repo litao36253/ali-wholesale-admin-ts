@@ -15,7 +15,7 @@ import { Component, Vue } from 'vue-property-decorator'
   components: {}
 })
 export default class Test extends Vue {
-  protected title = 'ceshi'
+  protected title = '标题'
 }
 </script>
 
