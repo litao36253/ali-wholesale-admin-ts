@@ -32,6 +32,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   const authCheck = !to.matched.some(item => item.meta?.authCheck === false) // 当前要进入的路由是否需要校验权限
   if (authCheck) {
+    // @ts-ignore
     const userInfo = store.state.common.userInfo
     if (userInfo._id) {
       next()

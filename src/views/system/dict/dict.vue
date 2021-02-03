@@ -53,11 +53,11 @@
 </template>
 
 <script>
-import { Datagrid, DatagridColumn } from '@/components/datagrid/datagrid'
+// import { Datagrid, DatagridColumn } from '@/components/datagrid/datagrid'
 
 export default {
   name: 'system.dict',
-  components: { Datagrid, DatagridColumn },
+  // components: { Datagrid, DatagridColumn },
   data () {
     return {
       data: [],

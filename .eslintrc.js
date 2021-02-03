@@ -19,5 +19,9 @@ module.exports = {
   rules: {
     indent: 'off',
     '@typescript-eslint/indent': ['error', 2]
+  },
+  globals: {
+    uni: true,
+    uniCloud: true
   }
 }

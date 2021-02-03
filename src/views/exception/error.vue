@@ -3,9 +3,9 @@
 </template>
 
 <script>
-  export default {
-    name: 'exception.error'
-  }
+export default {
+  name: 'exception.error'
+}
 </script>
 
 <style>
