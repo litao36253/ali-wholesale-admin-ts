@@ -8,7 +8,8 @@ export const queryDict = (param: { code?: string }, pagination: Pagination) => {
   const res = collection.where({
     ...param
   })
-    .skip(4)
+    .skip(pagination.pageSize * (pagination.currentPage - 1))
+    .limit(pagination.pageSize)
     .get()
   const countRes = collection.where({
     ...param

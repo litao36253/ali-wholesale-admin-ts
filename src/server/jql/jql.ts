@@ -1,4 +1,4 @@
-import * as dict from '@/server/jql/controller/system/dict'
+import * as dict from './controller/system/dict'
 
 export default {
   system: {

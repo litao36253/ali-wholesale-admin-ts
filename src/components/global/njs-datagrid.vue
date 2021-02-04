@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading"
-    element-loading-text="loadingText"
+    :element-loading-text="loadingText"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(255, 255, 255, 0.8)"
     class="njs-datagrid"
@@ -185,7 +185,7 @@ export default class NjsDatagrid extends Vue {
   @Prop(Array)
   public readonly data: [] // 配置要展示的数据
 
-  @Prop({type: Number, default: 0})
+  @Prop({ type: Number, default: 0 })
   public readonly duration: number // 耗时
 
   @Prop({ type: Boolean, default: true })
@@ -218,7 +218,7 @@ export default class NjsDatagrid extends Vue {
   @Prop({ type: Boolean, default: false })
   public readonly hideNeck: boolean // 是否隐藏datagrid组件的颈部，即第二栏
 
-  @Prop({ type: String, default: '拼命加载中' })
+  @Prop({ type: String, default: '拼命加载中...' })
   public readonly loadingText: string // 加载时显示的提示文字
 
   @Prop({ type: Array, default: () => [] })
@@ -378,9 +378,11 @@ export default class NjsDatagrid extends Vue {
     const moreQueryValidateResult = this.queryForm ? await this.queryForm.validate() : true
     if (queryValidateResult && moreQueryValidateResult) {
       this.loading = true
-      this.tableData = []
       this.$emit('before-load', this.formData)
-      const result = await this.service(this.formData).then(result => {
+      const result = await this.service(this.formData, {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage
+      }).then(result => {
         if (result.code) {
           this.$emit('load-error', result)
         } else {
@@ -390,6 +392,7 @@ export default class NjsDatagrid extends Vue {
       })
       this.total = result.total
       this.realDuration = result.duration
+      this.tableData = result.data
       this.loading = false
       this.$nextTick(() => {
         this.doLayout()
@@ -399,17 +402,11 @@ export default class NjsDatagrid extends Vue {
 
   // 载入静态数据
   protected loadData () {
-    const tableData = []
     const start = (this.currentPage - 1) * this.pageSize
     const end = this.currentPage * this.pageSize
-    this.data.forEach((item, index) => {
-      if (index >= start && index < end) {
-        tableData.push(item)
-      } else {
-        return false
-      }
+    this.tableData = this.data.filter((item, index) => {
+      return index >= start && index < end
     })
-    this.tableData = tableData
   }
 
   // 获取已保存的查询条件
