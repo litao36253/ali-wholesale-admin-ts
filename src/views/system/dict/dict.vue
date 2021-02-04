@@ -2,6 +2,7 @@
   <div class="dict-wrap">
     <njs-datagrid
       datagridId="system.dict"
+      rowKey="_id"
       title="数据字典管理"
       subheading="开发人员维护数据字典"
       :data="data"
@@ -54,6 +55,8 @@
 
 <script>
 // import { Datagrid, DatagridColumn } from '@/components/datagrid/datagrid'
+import jql from '@/server/jql/jql.ts'
+
 
 export default {
   name: 'system.dict',
@@ -82,14 +85,11 @@ export default {
       ]
     }
   },
-  created () {
-    const database = uniCloud.database()
-    database.collection('uni-dict').get().then(res => {
-      const { result } = res
-      if (!result.code) {
-        this.data = result.data
-      }
+  async created () {
+    const a = await jql.system.dict.queryDict({
+      // code: '2323'
     })
+    console.log(a)
   },
   methods: {
     handleSubmitDict () {

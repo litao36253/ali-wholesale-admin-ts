@@ -185,7 +185,7 @@ export default class NjsDatagrid extends Vue {
   @Prop(Array)
   public readonly data: [] // 配置要展示的数据
 
-  @Prop(Number)
+  @Prop({type: Number, default: 0})
   public readonly duration: number // 耗时
 
   @Prop({ type: Boolean, default: true })
