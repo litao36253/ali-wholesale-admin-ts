@@ -309,73 +309,65 @@ export default class NjsDatagrid extends Vue {
 
   // 点击右上角按钮执行的方法
   protected btnListClick ($event, btn) {
-    // @todo
-    // if (btn.type === 'delete') {
-    //   if (this.multiple) {
-    //     if (this.selection.length) {
-    //       this.$confirm(btn.confirm || '你确定要删除选中的数据吗？', '提示', {
-    //         type: 'warning'
-    //       }).then(() => {
-    //         let reqJson = {
-    //           service: btn.service
-    //         }
-    //         if (btn.max === undefined) {
-    //           if (this.selection.length > 100) {
-    //             if (btn.maxText) {
-    //               this.$message.warning(btn.maxText)
-    //             } else {
-    //               this.$message.warning('批量删除数量不能超过 ' + 100)
-    //             }
-    //             return
-    //           }
-    //         } else {
-    //           if (this.selection.length > btn.max) {
-    //             if (btn.maxText) {
-    //               this.$message.warning(btn.maxText)
-    //             } else {
-    //               this.$message.warning('批量删除数量不能超过 ' + btn.max)
-    //             }
-    //             return
-    //           }
-    //         }
-    //         const keys = []
-    //         this.selection.forEach((item) => {
-    //           keys.push(item[btn.key])
-    //         })
-    //         reqJson[btn.key] = keys.join(',')
-    //         if (btn.query) { // 如果调用删除接口有附加的条件
-    //           reqJson = { ...reqJson, ...btn.query }
-    //         }
-    //         this.$ajaxRequest([reqJson]).then((result) => {
-    //           if (result.code === '0') {
-    //             this.$message({
-    //               type: 'success',
-    //               message: btn.successText || '删除成功！'
-    //             })
-    //             this.clearSelection()
-    //             this.refresh()
-    //             btn.success && btn.success(result)
-    //           } else {
-    //             this.$message.error(result.head.msg)
-    //             btn.fail && btn.fail(result.head)
-    //           }
-    //         }).catch((err) => {
-    //           console.log(err)
-    //           btn.fail && btn.fail(err)
-    //         })
-    //       }).catch(() => {
-    //         this.$message({
-    //           type: 'info',
-    //           message: '已取消删除'
-    //         })
-    //       })
-    //     } else {
-    //       this.$message.warning(btn.unchecked || '请勾选要删除的数据！')
-    //     }
-    //   }
-    // } else {
-    //   btn.handler && btn.handler($event, btn)
-    // }
+    if (btn.type === 'delete') {
+      if (this.multiple) {
+        if (this.selection.length) {
+          this.$confirm(btn.confirm || '你确定要删除选中的数据吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            if (btn.max === undefined) {
+              if (this.selection.length > 100) {
+                if (btn.maxText) {
+                  this.$message.warning(btn.maxText)
+                } else {
+                  this.$message.warning('批量删除数量不能超过 ' + 100)
+                }
+                return
+              }
+            } else {
+              if (this.selection.length > btn.max) {
+                if (btn.maxText) {
+                  this.$message.warning(btn.maxText)
+                } else {
+                  this.$message.warning('批量删除数量不能超过 ' + btn.max)
+                }
+                return
+              }
+            }
+            const keys = []
+            this.selection.forEach((item) => {
+              keys.push(item[btn.key])
+            })
+            btn.service(btn.param).then((result) => {
+              if (!result.code) {
+                this.$message({
+                  type: 'success',
+                  message: btn.successText || '删除成功！'
+                })
+                this.clearSelection()
+                this.refresh()
+                btn.success && btn.success(result)
+              } else {
+                this.$message.error(result.head.msg)
+                btn.fail && btn.fail(result.head)
+              }
+            }).catch((err) => {
+              console.log(err)
+              btn.fail && btn.fail(err)
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+        } else {
+          this.$message.warning(btn.unchecked || '请勾选要删除的数据！')
+        }
+      }
+    } else {
+      btn.handler && btn.handler($event, btn)
+    }
   }
 
   public async refresh () {
