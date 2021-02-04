@@ -48,11 +48,11 @@
         </template>
       </div>
       <div class="njs-datagrid-query">
-        <el-form ref="moreUsedQuery" :model="formData" label-position="right" size="small" inline="inline" :rules="rules"
+        <el-form ref="queryForm" :model="formData" label-position="right" size="small" inline="inline" :rules="rules"
           :class="['njs-datagrid-more-used-query']" @submit.native.prevent>
           <slot name="query" :formData="formData"></slot>
         </el-form>
-        <el-dropdown size="small" type="primary" v-if="$scopedSlots['more-query']" @command="myQueryCommand">
+        <el-dropdown size="small" type="primary" v-if="$scopedSlots['more-query']" @command="handleQueryCommand">
           <el-button type="primary" size="small">{{'我的查询'}}<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
@@ -71,8 +71,8 @@
             <slot name="more-query" :formData="formData"></slot>
           </el-form>
           <div class="njs-datagrid-query-btngroup">
-            <el-button @click="clickRefresh" size="small" type="primary">搜索</el-button>
-            <el-button @click="resetFields" size="small">{{'重置'}}</el-button>
+            <el-button @click="handleClickRefresh" size="small" type="primary">查询</el-button>
+            <el-button @click="resetFields" size="small">重置</el-button>
             <el-form ref="saveQueryForm" :model="saveQueryModel" size="small"
               :rules="[{ required: true, message: '请输入查询名称', trigger: 'change' }, { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'change' }]" @submit.native.prevent>
               <el-form-item prop="queryName">
@@ -109,7 +109,7 @@
     </div>
 
     <div class="njs-datagrid-foot" v-if="pagination">
-      <div class="njs-datagrid-page-info"><span>共 {{total}} 条 / 耗时 {{ duration }} 秒</span><span
+      <div class="njs-datagrid-page-info"><span>共 {{total}} 条 / 耗时 {{ realDuration }} 秒</span><span
           class="njs-datagrid-page-size"><span>每页</span>
           <el-select v-model="pageSize" size="mini" :style="{display: 'inline-block', width: '68px'}"
             :clearable="false">
@@ -121,9 +121,6 @@
       <el-pagination @current-change="handleCurrentChange" @prev-click="handlePrevClick" @next-click="handleNextClick"
         background="background" :current-page.sync="currentPage" :page-size="pageSize" layout="prev, pager, next, jumper"
         :total="total"></el-pagination>
-      <!-- <a-pagination @current-change="handleCurrentChange" @prev-click="handlePrevClick" @next-click="handleNextClick"
-        background="background" :current-page.sync="currentPage" :page-size="pageSize" layout="prev, pager, next, jumper"
-        :total="total"></a-pagination> -->
     </div>
     <slot name="fixed-card" :formData="formData"></slot>
   </div>
@@ -131,16 +128,32 @@
 
 <script lang="ts">
 import { Component, Prop, Ref, Vue } from 'vue-property-decorator'
+import { Form, Table } from 'element-ui'
 
 @Component({
   name: 'njs-datagrid'
 })
 export default class NjsDatagrid extends Vue {
+  @Ref('queryForm')
+  protected queryForm: Form
+
+  @Ref('moreQueryForm')
+  protected moreQueryForm: Form
+
+  @Ref('saveQueryForm')
+  protected saveQueryForm: Form
+
+  @Ref('table')
+  protected table: Table
+
+  @Ref('moreQueryDrop')
+  protected moreQueryDrop
+
   @Prop({ type: String, required: true })
   public readonly datagridId // 组件ID,用于保存查询条件时与其他datagrid组件的查询条件作区分
 
   @Prop({ type: [Function, String], required: true })
-  public readonly rowKey: Function | string // 行数据的 Key
+  public readonly rowKey: string // 行数据的 Key
 
   @Prop(String)
   public readonly title: string // 标题
@@ -208,23 +221,29 @@ export default class NjsDatagrid extends Vue {
   @Prop({ type: String, default: '拼命加载中' })
   public readonly loadingText: string // 加载时显示的提示文字
 
+  @Prop({ type: Array, default: () => [] })
+  public readonly notSaveQueries: string[] // 保存查询条件时要忽略的字段
+
   public readonly formData: {[key: string] : any} = {} // 查询条件绑定的数据
 
-  public readonly loading = false
+  protected loading = false
 
-  public readonly selection = []
+  protected selection = []
 
   public currentRow // 单选时的当前项目
   public oldCurrentRow // 单选时的老的当前项目
 
-  public readonly tableData = [] // 表格绑定的数据
+  public tableData = [] // 表格绑定的数据
 
   protected saveQueryModel: {queryName: ''} // 保存查询条件时的数据
 
   protected queryList = [] // 保存的查询条件集合
 
   protected columns = [] // 表格的列集合
+
   protected showColumns = [] // 表格显示的列集合
+
+  protected hideBadge = true // 是否显示更多查询条件的标记
 
   protected pageSize = 0
 
@@ -232,9 +251,442 @@ export default class NjsDatagrid extends Vue {
 
   protected total = 0
 
+  protected realDuration = 0
+
   protected created () {
     Object.assign(this.formData, this.defaultQuery)
     this.pageSize = this.pageSizes[0]
+    this.realDuration = this.duration
+    if (this.data) {
+      this.total = this.data.length
+      this.loadData()
+    }
+  }
+
+  protected mounted () {
+    // 获取保存的查询条件
+    this.$scopedSlots['more-query'] && this.getSaveQuery()
+    if (this.queryForm) {
+      // @ts-ignore
+      this.queryForm.fields.forEach((item) => {
+        if (!this.formData[item.prop]) {
+          this.$set(this.formData, item.prop, '')
+        }
+      })
+      this.$nextTick(() => {
+        if (!this.autoLoading) {
+          this.queryForm.clearValidate()
+        }
+      })
+    }
+    if (this.moreQueryForm) {
+      // @ts-ignore
+      this.moreQueryForm.fields.forEach((item) => {
+        if (!this.formData[item.prop]) {
+          this.$set(this.formData, item.prop, '')
+        }
+      })
+      this.$nextTick(() => {
+        if (!this.autoLoading) {
+          this.moreQueryForm.clearValidate()
+        }
+      })
+    }
+    // 初始化创建表格的列集合和表格显示的列集合
+    this.table.$children.forEach((item: any) => {
+      if (item.prop) {
+        this.columns.push(item)
+        if (item.hide === false) { // 初始状态不为隐藏的列才在初始时显示
+          this.showColumns.push(item.prop)
+        }
+      }
+    })
+    // 是否自动加载一次
+    if (this.autoLoading) {
+      this.refresh()
+    }
+  }
+
+  // 点击右上角按钮执行的方法
+  protected btnListClick ($event, btn) {
+    // @todo
+    // if (btn.type === 'delete') {
+    //   if (this.multiple) {
+    //     if (this.selection.length) {
+    //       this.$confirm(btn.confirm || '你确定要删除选中的数据吗？', '提示', {
+    //         type: 'warning'
+    //       }).then(() => {
+    //         let reqJson = {
+    //           service: btn.service
+    //         }
+    //         if (btn.max === undefined) {
+    //           if (this.selection.length > 100) {
+    //             if (btn.maxText) {
+    //               this.$message.warning(btn.maxText)
+    //             } else {
+    //               this.$message.warning('批量删除数量不能超过 ' + 100)
+    //             }
+    //             return
+    //           }
+    //         } else {
+    //           if (this.selection.length > btn.max) {
+    //             if (btn.maxText) {
+    //               this.$message.warning(btn.maxText)
+    //             } else {
+    //               this.$message.warning('批量删除数量不能超过 ' + btn.max)
+    //             }
+    //             return
+    //           }
+    //         }
+    //         const keys = []
+    //         this.selection.forEach((item) => {
+    //           keys.push(item[btn.key])
+    //         })
+    //         reqJson[btn.key] = keys.join(',')
+    //         if (btn.query) { // 如果调用删除接口有附加的条件
+    //           reqJson = { ...reqJson, ...btn.query }
+    //         }
+    //         this.$ajaxRequest([reqJson]).then((result) => {
+    //           if (result.code === '0') {
+    //             this.$message({
+    //               type: 'success',
+    //               message: btn.successText || '删除成功！'
+    //             })
+    //             this.clearSelection()
+    //             this.refresh()
+    //             btn.success && btn.success(result)
+    //           } else {
+    //             this.$message.error(result.head.msg)
+    //             btn.fail && btn.fail(result.head)
+    //           }
+    //         }).catch((err) => {
+    //           console.log(err)
+    //           btn.fail && btn.fail(err)
+    //         })
+    //       }).catch(() => {
+    //         this.$message({
+    //           type: 'info',
+    //           message: '已取消删除'
+    //         })
+    //       })
+    //     } else {
+    //       this.$message.warning(btn.unchecked || '请勾选要删除的数据！')
+    //     }
+    //   }
+    // } else {
+    //   btn.handler && btn.handler($event, btn)
+    // }
+  }
+
+  public async refresh () {
+    if (this.data) {
+      return
+    }
+    const queryValidateResult = this.queryForm ? await this.queryForm.validate() : true
+    const moreQueryValidateResult = this.queryForm ? await this.queryForm.validate() : true
+    if (queryValidateResult && moreQueryValidateResult) {
+      this.loading = true
+      this.tableData = []
+      this.$emit('before-load', this.formData)
+      const result = await this.service(this.formData).then(result => {
+        if (result.code) {
+          this.$emit('load-error', result)
+        } else {
+          this.$emit('load-success', result)
+        }
+        return result
+      })
+      this.total = result.total
+      this.realDuration = result.duration
+      this.loading = false
+      this.$nextTick(() => {
+        this.doLayout()
+      })
+    }
+  }
+
+  // 载入静态数据
+  protected loadData () {
+    const tableData = []
+    const start = (this.currentPage - 1) * this.pageSize
+    const end = this.currentPage * this.pageSize
+    this.data.forEach((item, index) => {
+      if (index >= start && index < end) {
+        tableData.push(item)
+      } else {
+        return false
+      }
+    })
+    this.tableData = tableData
+  }
+
+  // 获取已保存的查询条件
+  protected getSaveQuery () {
+    // @todo
+  }
+
+  // 重置查询条件
+  protected resetFields () {
+    this.queryForm && this.queryForm.resetFields()
+    this.moreQueryForm && this.moreQueryForm.resetFields()
+  }
+
+  // 点击搜索按钮
+  protected handleClickRefresh () {
+    this.moreQueryDrop.visible = false
+    this.refresh()
+  }
+
+  protected handleQueryCommand () {
+    // @todo
+    // const json = JSON.parse(query.QUERY_JSON.replace(/(&quot;)/g, () => {
+    //   return '"'
+    // }))
+    // for (const attr in json) {
+    //   if (!this.notSaveQueries.some((notSave) => {
+    //     return notSave === attr
+    //   })) {
+    //     this.formData[attr] = json[attr]
+    //   }
+    // }
+    // this.refresh()
+  }
+
+  // 保存查询条件
+  protected async saveQuery () {
+    const validateResult = await this.saveQueryForm.validate()
+    if (validateResult) {
+      const json = {}
+      for (const attr in this.formData) {
+        if (!this.notSaveQueries.includes(attr)) {
+          json[attr] = this.formData[attr]
+        }
+      }
+      // @todo
+      // this.$ajaxRequest([{
+      //   service: 'U0301101',
+      //   DATAGRID_ID: this.datagridId,
+      //   QUERY_CONDITION_NAME: this.saveQueryModel.queryName,
+      //   QUERY_JSON: JSON.stringify(json)
+      // }]).then((result) => {
+      //   if (result.code === '0') {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '保存查询条件成功，可在“我的查询”中使用。'
+      //     })
+      //     this.saveQueryForm.resetFields()
+      //     this.getSaveQuery()
+      //   }
+      // }).catch((err) => {
+      //   console.log(err)
+      // })
+    }
+  }
+
+  // 删除已保存的查询
+  protected deleteQuery (query) {
+    this.$confirm(`你确定要删除名为“${query.query_name}”的查询吗？`, '提示', {
+      type: 'warning'
+    }).then(() => {
+      // @todo
+      // this.$ajaxRequest([{
+      //   service: 'U0301202',
+      //   HIS_ID: query.HIS_ID
+      // }]).then((result) => {
+      //   if (result.code === '0') {
+      //     this.getSaveQuery()
+      //     this.$message({
+      //       type: 'success',
+      //       message: `删除名为“${query.query_name}”'的查询成功。`
+      //     })
+      //   }
+      // })
+    }).catch(() => {
+      this.$message({
+        type: 'info',
+        message: '已取消删除'
+      })
+    })
+  }
+
+  // 分页条当前页码变化
+  protected handleCurrentChange (val) {
+    if (this.data) {
+      this.loadData()
+    } else {
+      this.$nextTick(() => {
+        this.refresh()
+      })
+    }
+    this.$emit('current-page-change', val)
+  }
+
+  // 当多选选择项发生变化时会触发该事件
+  protected handleSelectionChange (selection) {
+    this.selection = selection
+    this.$emit('selection-change', selection)
+  }
+
+  // 当单选选择项发生变化时会触发该事件
+  protected handleCurrentRowChange (currentRow, oldCurrentRow) {
+    if (this.reserveSelection) { // 需要保存刷新前的选中数据时
+      if (this.currentRow) {
+        if (currentRow && this.currentRow[this.rowKey] !== currentRow[this.rowKey]) {
+          this.currentRow = currentRow
+          this.oldCurrentRow = oldCurrentRow
+          this.$emit('current-change', currentRow, oldCurrentRow)
+        }
+      } else {
+        if (currentRow) {
+          this.currentRow = currentRow
+          this.oldCurrentRow = oldCurrentRow
+          this.$emit('current-change', currentRow, oldCurrentRow)
+        }
+      }
+    } else { // 不需要保存刷新前的选中数据时
+      this.currentRow = currentRow
+      this.oldCurrentRow = oldCurrentRow
+      this.$emit('current-change', currentRow, oldCurrentRow)
+    }
+  }
+
+  // 当用户手动勾选数据行的 Checkbox 时触发的事件
+  protected handleSelect (...arg) {
+    this.$emit('select', ...arg)
+  }
+
+  // 当用户手动勾选全选 Checkbox 时触发的事件
+  protected handleSelectAll (...arg) {
+    this.$emit('select-all', ...arg)
+  }
+
+  // 当单元格 hover 进入时会触发该事件
+  protected handleCellMouseEnter (...arg) {
+    this.$emit('cell-mouse-enter', ...arg)
+  }
+
+  // 当单元格 hover 退出时会触发该事件
+  protected handleCellMouseLeave (...arg) {
+    this.$emit('cell-mouse-leave', ...arg)
+  }
+
+  // 当某个单元格被点击时会触发该事件
+  protected handleCellClick (...arg) {
+    this.$emit('cell-click', ...arg)
+  }
+
+  // 当某个单元格被双击击时会触发该事件
+  protected handleCellDbclick (...arg) {
+    this.$emit('cell-dbclick', ...arg)
+  }
+
+  // 当某一行被点击时会触发该事件
+  protected handleRowClick (...arg) {
+    this.$emit('row-click', ...arg)
+  }
+
+  // 当某一行被鼠标右键点击时会触发该事件
+  protected handleRowContextmenu (...arg) {
+    this.$emit('row-contextmenu', ...arg)
+  }
+
+  // 当某一行被双击时会触发该事件
+  protected handleRowDbclick (...arg) {
+    this.$emit('row-dblclick', ...arg)
+  }
+
+  // 当某一列的表头被点击时会触发该事件
+  protected handleHeaderClick (...arg) {
+    this.$emit('header-click', ...arg)
+  }
+
+  // 当某一列的表头被鼠标右键点击时触发该事件
+  protected handleHeaderContextmenu (...arg) {
+    this.$emit('header-contextmenu', ...arg)
+  }
+
+  // 当表格的排序条件发生变化的时候会触发该事件
+  protected handleSortChange (...arg) {
+    this.$emit('sort-change', ...arg)
+  }
+
+  // 用户点击下一页按钮改变当前页后触发
+  protected handleNextClick (...arg) {
+    this.$emit('next-click', ...arg)
+  }
+
+  // 用户点击上一页按钮改变当前页后触发
+  protected handlePrevClick (...arg) {
+    this.$emit('prev-click', ...arg)
+  }
+
+  // 表格重绘
+  public doLayout () {
+    this.table.doLayout()
+  }
+
+  // 用于多选表格，清空用户的选择
+  public clearSelection () {
+    this.table.clearSelection()
+  }
+
+  // 用于多选表格，切换某一行的选中状态，如果使用了第二个参数，则是设置这一行选中与否（selected 为 true 则选中）
+  public toggleRowSelection (row, selected) {
+    this.table.toggleRowSelection(row, selected)
+  }
+
+  // 用于多选表格，切换所有行的选中状态
+  public toggleAllSelection () {
+    this.table.toggleAllSelection()
+  }
+
+  // 用于单选表格，设定某一行为选中行，如果调用时不加参数，则会取消目前高亮行的选中状态。
+  public setCurrentRow (row?) {
+    this.table.setCurrentRow(row)
+  }
+
+  // 用于清空排序条件，数据会恢复成未排序的状态
+  public clearSort () {
+    this.table.clearSort()
+  }
+
+  // 不传入参数时用于清空所有过滤条件，数据会恢复成未过滤的状态，也可传入由columnKey组成的数组以清除指定列的过滤条件
+  public clearFilter (columnKey) {
+    // @ts-ignore
+    this.table.clearFilter(columnKey)
+  }
+
+  // 手动对 Table 进行排序。参数prop属性指定排序列，order指定排序顺序。
+  public sort (prop: string, order: string) {
+    this.table.sort(prop, order)
+  }
+
+  // 单选时用来回写选中状态
+  public singleSelectRewrite () {
+    this.setCurrentRow()
+    let row
+    if (this.currentRow) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i][this.rowKey] === this.currentRow[this.rowKey]) {
+          row = this.tableData[i]
+          break
+        }
+      }
+    }
+    if (row) {
+      this.setCurrentRow(row)
+    }
+  }
+
+  // 切换更多查询条件的收缩展开状态
+  public toggleMoreQuery (openState) {
+    if (openState === undefined) {
+      this.moreQueryDrop.visible = !this.moreQueryDrop.visible
+    } else if (openState === true) {
+      this.moreQueryDrop.visible = true
+    } else if (openState === false) {
+      this.moreQueryDrop.visible = false
+    }
   }
 }
 </script>
