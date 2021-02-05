@@ -1,8 +1,9 @@
 <template>
   <div class="dict-wrap">
     <njs-datagrid
+      ref="datagrid"
       datagridId="system.dict"
-      :service="service"
+      :service="$jql.system.dict.queryDict"
       rowKey="_id"
       title="数据字典管理"
       subheading="开发人员维护数据字典"
@@ -16,6 +17,8 @@
       <njs-datagrid-column prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="creator" label="创建人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="create_time" label="创建时间" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column label="操作" min-width="160" fixed="right">
         <template v-slot="{ row }">
           <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
@@ -29,7 +32,7 @@
       </template>
     </njs-datagrid>
 
-    <el-dialog :visible.sync="editDialogVisible">
+    <el-dialog :visible.sync="editDialogVisible" @close="handleDialogClose">
       <el-form ref="editForm" :model="editFormModel">
         <el-form-item label="字典编号" prop="code">
           <el-input v-model="editFormModel.code" placeholder=""></el-input>
@@ -56,76 +59,66 @@
 </template>
 
 <script lang="ts">
-// import { Datagrid, DatagridColumn } from '@/components/datagrid/datagrid'
-// import jql from '@/server/jql/jql'
-
-// export default {
-//   name: 'system.dict',
-//   // components: { Datagrid, DatagridColumn },
-//   data () {
-//     return {
-//       data: [],
-//       editDialogVisible: false,
-//       editFormModel: {
-//         code: '',
-//         name: '',
-//         type: '',
-//         edit_enable: '',
-//         comment: ''
-//       },
-//       btnList: [
-//         {
-//           text: '新增字典',
-//           handler: () => {
-//             this.editDialogVisible = true
-//             this.$nextTick(() => {
-//               this.$refs.editForm.resetFields()
-//             })
-//           }
-//         },
-//         {
-//           type: 'delete',
-//           text: '批量删除'
-//         }
-//       ],
-//       service: jql.system.dict.queryDict
-//     }
-//   },
-//   async created () {
-//     // const a = await jql.system.dict.queryDict({
-//     //   // code: '2323'
-//     // }, { currentPage: 1, pageSize: 2 })
-//     // console.log(a)
-//   },
-//   methods: {
-//     handleSubmitDict () {
-//       const database = uniCloud.database()
-//       database.collection('uni-dict').add({
-//         ...this.editFormModel
-//       }).then(res => {
-//         console.log(res)
-//       })
-//     },
-//     handlerShowDetails (row) {
-
-//     },
-//     handleEdit (row) {
-
-//     },
-//     handleDelete (row) {
-
-//     }
-//   }
-// }
-
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Form } from 'element-ui'
+import Datagrid from '@/components/global/njs-datagrid.vue'
 
 @Component({
   name: 'system.dict'
 })
 export default class Dict extends Vue {
-  protected created () {
+  @Ref('editForm')
+  protected editForm: Form
+
+  @Ref('datagrid')
+  protected datagrid: Datagrid
+
+  protected editDialogVisible = false
+
+  protected editFormModel = {
+    code: '',
+    name: '',
+    type: '',
+    edit_enable: '',
+    comment: ''
+  }
+
+  protected get btnList () {
+    return [
+      {
+        text: '新增字典',
+        handler: () => {
+          this.editDialogVisible = true
+        }
+      }
+    ]
+  }
+
+  protected mounted () {
     // this.$jql.system.dict.queryDict()
+    // this.datagrid.doLayout()
+  }
+
+  protected handleSubmitDict () {
+    this.$jql.system.dict.addDict(this.editFormModel).then(res => {
+      console.log('res', res)
+    })
+  }
+
+  protected handlerShowDetails (row) {
+    console.log(row)
+  }
+
+  protected handleEdit (row) {
+    console.log(row)
+  }
+
+  protected handleDelete (row) {
+    console.log(row)
+  }
+
+  protected handleDialogClose () {
+    this.editForm.resetFields()
   }
 }
 </script>

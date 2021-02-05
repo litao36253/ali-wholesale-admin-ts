@@ -3,7 +3,7 @@
 	"bsonType": "object",
 	"required": ["code", "name", "edit_enable", "type"],
 	"permission": {
-		"read": true,
+		"read": "doc.is_delete==false",
 		"create": false,
 		"update": false,
 		"delete": false
@@ -64,14 +64,20 @@
 			"description": "是否已删除",
 			"defaultValue": false
 		},
-		"last_reviser": {
+		"creator": {
 			"bsonType": "string",
-			"description": "最后修改人",
-			"foreignKey": "uni-id-users._id"
+			"description": "创建人",
+			"foreignKey": "uni-id-users._id",
+      "forceDefaultValue": {
+        "$env": "uid"
+      }
 		},
-		"update_date": {
+		"create_time": {
 			"bsonType": "timestamp",
-			"description": "最后修改时间"
+			"description": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
 		}
 	}
 }

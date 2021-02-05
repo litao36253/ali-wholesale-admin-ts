@@ -6,7 +6,8 @@ const db = uniCloud.database()
 export const queryDict = (param: { code?: string }, pagination: Pagination) => {
   const collection = db.collection('uni-dict')
   const res = collection.where({
-    ...param
+    ...param,
+    is_delete: false
   })
     .skip(pagination.pageSize * (pagination.currentPage - 1))
     .limit(pagination.pageSize)
@@ -15,4 +16,10 @@ export const queryDict = (param: { code?: string }, pagination: Pagination) => {
     ...param
   }).count()
   return handleResult(res, countRes)
+}
+
+export const addDict = (param: { code: string, name: string, type: string, edit_enable: string, comment: string }) => {
+  const collection = db.collection('uni-dict')
+  const res = collection.add(param)
+  return handleResult(res)
 }

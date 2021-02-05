@@ -564,6 +564,10 @@ export default class NjsDatagrid extends Vue {
     this.$emit('cell-click', ...arg)
   }
 
+  protected handleCellDblclick (...arg) {
+    this.$emit('cell-dblclick', ...arg)
+  }
+
   // 当某个单元格被双击击时会触发该事件
   protected handleCellDbclick (...arg) {
     this.$emit('cell-dbclick', ...arg)
