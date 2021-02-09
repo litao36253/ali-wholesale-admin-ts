@@ -45,6 +45,10 @@ $--menu-background: rgb(40, 44, 52);
 //菜单阴影颜色
 $--menu-shadow: rgba(0, 21, 41, 0.35);
 
+/// 滚动条的颜色
+$--scrollbar-default: rgba(0, 0, 0, 0.3) !default;
+$--scrollbar-hover: rgba(0, 0, 0, 0.4) !default;
+
 $--color-success-light: mix($--color-white, $--color-success, 80%) !default;
 $--color-warning-light: mix($--color-white, $--color-warning, 80%) !default;
 $--color-danger-light: mix($--color-white, $--color-danger, 80%) !default;
