@@ -4,7 +4,8 @@
       <template v-if="type==='state'">
         <el-tag :type="stateMap[row[prop]]" size="medium">{{realFormatter(row,column,row[prop],$index)}}</el-tag>
       </template>
-      <template v-else-if="type==='stateColor'">
+      <template v-else-if="type === 'time'">{{ moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') }}</template>
+      <template v-else-if="type==='color'">
         <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{realFormatter(row,column,row[prop],$index)}}</el-tag>
       </template>
       <slot v-else-if="$scopedSlots['default']" :row="row" :column="column" :$index="$index"></slot>
@@ -18,6 +19,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'njs-datagrid-column',
   inject: ['getShowColums'],
@@ -117,7 +120,8 @@ export default {
     // 获取数据字典
     getDict () {
       return ''
-    }
+    },
+    moment
   },
   computed: {
     showColum () { // 计算此列是否显示

@@ -112,15 +112,21 @@
       <div class="njs-datagrid-page-info"><span>共 {{total}} 条，耗时 {{ realDuration }} 秒</span><span
           class="njs-datagrid-page-size"><span>每页</span>
           <el-select v-model="pageSize" size="mini" :style="{display: 'inline-block', width: '68px'}"
-            :clearable="false">
+            :clearable="false" @change="handlePageSizeChange">
             <el-option v-for="item in pageSizes" :key="item" :lable="item" :value="item"></el-option>
           </el-select><span>条</span>
         </span></div>
       <div class="njs-datagrid-select-num" v-if="reserveSelection && (singleSelect || multiple)">
-        <span>已选数量：</span><span style="color: red;">{{selectNum}}</span></div>
-      <el-pagination @current-change="handleCurrentChange" @prev-click="handlePrevClick" @next-click="handleNextClick"
-        background="background" :current-page.sync="currentPage" :page-size="pageSize" layout="prev, pager, next, jumper"
-        :total="total"></el-pagination>
+        <span>已选数量：</span><span style="color: red;">{{ selectNum }}</span></div>
+      <el-pagination
+        background="background" :current-page.sync="currentPage" :page-size="pageSize"
+        :total="total"
+        layout="prev, pager, next, jumper"
+        @current-change="handleCurrentChange"
+        @prev-click="handlePrevClick"
+        @next-click="handleNextClick"
+      >
+      </el-pagination>
     </div>
     <slot name="fixed-card" :formData="formData"></slot>
   </div>
@@ -514,6 +520,12 @@ export default class NjsDatagrid extends Vue {
       })
     }
     this.$emit('current-page-change', val)
+  }
+
+  // pageSize发生变化
+  protected handlePageSizeChange () {
+    this.currentPage = 1
+    this.handleCurrentChange(this.currentPage)
   }
 
   // 当多选选择项发生变化时会触发该事件

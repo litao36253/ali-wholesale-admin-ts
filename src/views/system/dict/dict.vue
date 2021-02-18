@@ -18,7 +18,7 @@
       <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="creator" label="创建人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="create_time" label="创建时间" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="create_time" label="创建时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
       <njs-datagrid-column label="操作" min-width="160" fixed="right">
         <template v-slot="{ row }">
           <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
