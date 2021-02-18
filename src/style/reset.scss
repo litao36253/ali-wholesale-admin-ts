@@ -41,5 +41,9 @@ html {
     * {
       @include base-scrollbar;
     }
+
+    ul,li {
+      list-style: none;
+    }
   }
 }
