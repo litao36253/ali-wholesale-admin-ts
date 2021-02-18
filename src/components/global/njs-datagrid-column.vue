@@ -20,6 +20,7 @@
 <script>
 export default {
   name: 'njs-datagrid-column',
+  inject: ['getShowColums'],
   props: {
     type: {
       type: String,
@@ -121,9 +122,7 @@ export default {
   computed: {
     showColum () { // 计算此列是否显示
       if (this.prop) {
-        return this.$parent.$parent.showColumns.some((item) => {
-          return item === this.prop
-        })
+        return this.getShowColums().includes(this.prop)
       } else {
         return true
       }
