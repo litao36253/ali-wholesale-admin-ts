@@ -23,7 +23,7 @@ import moment from 'moment'
 
 export default {
   name: 'njs-datagrid-column',
-  inject: ['getShowColums'],
+  inject: ['getShowColumns'],
   props: {
     type: {
       type: String,
@@ -126,7 +126,7 @@ export default {
   computed: {
     showColum () { // 计算此列是否显示
       if (this.prop) {
-        return this.getShowColums().includes(this.prop)
+        return this.getShowColumns().includes(this.prop)
       } else {
         return true
       }
