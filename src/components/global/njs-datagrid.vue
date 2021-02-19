@@ -702,142 +702,179 @@ export default class NjsDatagrid extends Vue {
 }
 </script>
 
-<style lang="stylus" scoped>
-  .njs-datagrid
-    height 100%
-    display flex
-    box-sizing border-box
-    flex-direction column
-    overflow hidden
-    position relative
-    .njs-datagrid-head
-      border-bottom 1px solid #F2F2F2
-      padding 0 20px
-      display flex
-      align-items center
-      overflow hidden
-      .njs-datagrid-title-wrap
-        max-width 50%
-        padding-top 16px
-        padding-bottom 14px
-        .njs-datagrid-title
-          color #3A3C3E
-          font-size 14px
-          font-weight bold
-          line-height 20px
-        .njs-datagrid-subheading
-          line-height 20px
-          padding 3px 0
-          color #818691
-          font-size 12px
-      .njs-datagrid-buttons
-        flex 1
-        text-align right
-      .el-button--default
-        font-weight bold
-    .njs-datagrid-neck
-      display flex
-      height 72px
-      align-items center
+<style lang="scss" scoped>
+  .njs-datagrid {
+    height: 100%;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    .njs-datagrid-head {
+      border-bottom: 1px solid #F2F2F2;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
       overflow: hidden;
-      .njs-datagrid-prvbtns
-        padding 0 20px
-        .njs-datagrid-prvbtn
-          width 40px
-          height 32px
-          padding 0
-          color #409EFF
-          font-size 18px
-          border-color #E8E8E8
-          color #409EFF
-          margin-right 10px
-      .njs-datagrid-query
-        flex 1
-        display flex
-        overflow hidden
-        justify-content flex-end
-        align-items center
-        padding-right 20px
-        .njs-datagrid-more-query-btn
-          margin-left 14px
-          white-space nowrap
-        .njs-datagrid-more-used-query
-          display flex
-          padding-top 18px
-          .el-form-item__label
-            padding-left 12px
-          &>div
-            margin-right 10px
-    .njs-datagrid-table
-      flex 1
-      overflow hidden
-      padding 0 20px
-      z-index 0
-      .njs-datagrid-table-header
-        background-color #eee
-        th
-          background-color #eee
-          font-weight bold
-          color #333
-          padding 0
-          height 44px
-          line-height 44px
-          &>.cell
-            white-space nowrap
-      .el-table
-        min-height 100%
-    .njs-datagrid-foot
-      height 64px
-      display flex
-      align-items center
-      justify-content space-between
-      padding 0 20px
-      color #606266
-      font-size 14px
-      .njs-datagrid-page-info
-        .njs-datagrid-page-size
-          padding-left 6px
-          >span
-            padding 0 6px
-      //解决combogrid组件分页条显示校验图标问题
-      .el-input__suffix
-        .el-input__icon.el-input__validateIcon
-          display none
-  .njs-datagrid-more
-    padding-top 16px
-    width auto
-  .njs-datagrid-more-form
-    padding 20px 30px 0 30px
-  .njs-datagrid-hide-colum
-    padding 6px 20px
-    .el-checkbox
-      display block
-      height 28px
-      line-height 28px
-      margin 0 !important
-  .njs-datagrid-query-btngroup
-    display flex
-    height 54px
-    padding-top 10px
-    align-items flex-start
-    justify-content center
-    .el-input-group__append
-      background-color #2994FF
-      color #FFFFFF
-      &:hover
-        background-color #53a9ff
-  .njs-datagrid-query-item
+      .njs-datagrid-title-wrap {
+        max-width: 50%;
+        padding-top: 16px;
+        padding-bottom: 14px;
+        .njs-datagrid-title {
+          color: #3A3C3E;
+          font-size: 14px;
+          font-weight: bold;
+          line-height: 20px;
+        }
+        .njs-datagrid-subheading {
+          line-height: 20px;
+          padding: 3px 0;
+          color: #818691;
+          font-size: 12px;
+        }
+      }
+      .njs-datagrid-buttons {
+        flex: 1;
+        text-align: right;
+      }
+      .el-button--default {
+        font-weight: bold;
+      }
+    }
+    .njs-datagrid-neck {
+      display: flex;
+      height: 72px;
+      align-items: center;
+      overflow: hidden;
+      .njs-datagrid-prvbtns {
+        padding: 0 20px;
+        .njs-datagrid-prvbtn {
+          width: 40px;
+          height: 32px;
+          padding: 0;
+          color: #409EFF;
+          font-size: 18px;
+          border-color: #E8E8E8;
+          color: #409EFF;
+          margin-right: 10px;
+        }
+      }
+      .njs-datagrid-query {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 20px;
+        .njs-datagrid-more-query-btn {
+          margin-left: 14px;
+          white-space: nowrap;
+        }
+        .njs-datagrid-more-used-query {
+          display: flex;
+          padding-top: 18px;
+          .el-form-item__label {
+            padding-left: 12px;
+          }
+          &>div {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+    .njs-datagrid-table {
+      flex: 1;
+      overflow: hidden;
+      padding: 0 20px;
+      z-index: 0;
+      ::v-deep .njs-datagrid-table-header {
+        th {
+          background-color: #eee;
+          font-weight: bold;
+          color: #333;
+          padding: 0;
+          height: 44px;
+          line-height: 44px;
+          &>.cell {
+            white-space: nowrap;
+          }
+        }
+      }
+      .el-table {
+        min-height: 100%;
+      }
+    }
+    .njs-datagrid-foot {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      color: #606266;
+      font-size: 14px;
+      .njs-datagrid-page-info {
+        .njs-datagrid-page-size {
+          padding-left: 6px;
+          >span {
+            padding: 0 6px;
+          }
+        }
+      }
+      // 解决combogrid组件分页条显示校验图标问题
+      .el-input__suffix {
+        .el-input__icon.el-input__validateIcon {
+          display: none;
+        }
+      }
+    }
+  }
+  .njs-datagrid-more {
+    padding-top: 16px;
+    width: auto;
+  }
+  .njs-datagrid-more-form {
+    padding: 20px 30px 0 30px;
+  }
+  .njs-datagrid-hide-colum {
+    padding: 6px 20px;
+    .el-checkbox {
+      display: block;
+      height: 28px;
+      line-height: 28px;
+      margin: 0 !important;
+    }
+  }
+  .njs-datagrid-query-btngroup {
+    display: flex;
+    height: 54px;
+    padding-top: 10px;
+    align-items: flex-start;
+    justify-content: center;
+    .el-input-group__append {
+      background-color: #2994FF;
+      color: #FFFFFF;
+      &:hover {
+        background-color: #53a9ff;
+      }
+    }
+  }
+  .njs-datagrid-query-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .njs-datagrid-del-query
-      font-size 14px
-      color #0486FE
-    .njs-datagrid-del-query:hover
-      color #f56c6c
-  .njs-datagrid-more-query-mark
-    .el-badge__content.is-fixed
-      top 10px
-      width 10px
-      height 10px
+    .njs-datagrid-del-query {
+      font-size: 14px;
+      color: #0486FE;
+    }
+    .njs-datagrid-del-query:hover {
+      color: #f56c6c;
+    }
+  }
+  .njs-datagrid-more-query-mark {
+    .el-badge__content.is-fixed {
+      top: 10px;
+      width: 10px;
+      height: 10px;
+    }
+  }
 </style>
