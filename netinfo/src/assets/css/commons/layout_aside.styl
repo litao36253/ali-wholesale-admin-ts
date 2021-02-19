@@ -1,0 +1,61 @@
+// 左侧固定宽度,右侧内容区的布局公用样式
+.container-wrap-aside
+	width 100%
+	height 100%
+	box-sizing border-box
+	//padding $SP-layout-box-padding
+	.box-body
+		overflow hidden
+		background $SP-layout-box-bgcolor
+		border-radius $SP-layout-border-radius
+		width 100%
+		height 100%
+		display flex
+		.menu
+			height 100%
+			width 320px
+			flex none
+			background-color #FAFAFA
+			border-right 1px solid #E8E8E8
+			display flex
+			flex-direction column
+			.menu-title
+				height 46px
+				border-bottom 1px solid #E8E8E8
+				padding-left 20px
+				line-height 46px
+				color #3A3C3E
+				font-size 14px
+				font-weight bold
+				flex none
+			.menu-con
+				flex 1
+				overflow auto
+				padding 20px 12px
+				.custom-tree-node
+					flex 1
+					display flex
+					align-items center
+					justify-content space-between
+					font-size 14px
+					padding-right 8px
+				.el-tree
+					background #fff
+		.form-wrap
+			height 100%
+			flex 1
+			display flex
+			flex-direction column
+			padding-left 60px
+			.form-title
+				height 46px
+				border-bottom 1px solid #E8E8E8
+				line-height 46px
+				color #3A3C3E
+				font-size 14px
+				font-weight bold
+				flex none
+			.form
+				flex 1
+				padding-top 20px
+				width 500px

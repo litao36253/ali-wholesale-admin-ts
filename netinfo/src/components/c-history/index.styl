@@ -1,0 +1,63 @@
+.bar-bom-history
+  display flex
+  .actions
+    width 28px
+    height 32px
+    line-height 32px
+    text-align center
+    border-left $SP-layout-bom-history-border-color 1px solid
+    color $SP-layout-bom-history-color
+    cursor pointer
+    &:hover
+      color $red
+  .ul-wrap
+    flex 1
+    position relative
+    overflow hidden
+    ul
+      position absolute
+      top 0
+      bottom 0
+      display flex
+      white-space pre-wrap
+      transition-property all
+      transition-duration 0.3s
+      transition-timing-function cubic-bezier(0.42, 0, 0.58, 1)
+      li
+        position relative
+        display block
+        width auto
+        padding 0 30px 0 20px
+        height 32px
+        line-height 32px
+        color $SP-layout-bom-history-color
+        border-right $SP-layout-bom-history-border-color 1px solid
+        white-space nowrap
+        overflow hidden
+        user-select none
+        cursor pointer
+        &.disabled
+          padding 0 20px
+        &.active
+          color $SP-layout-bom-history-color-active
+          background $SP-layout-bom-history-bgcolor-active
+        &.canot-delete
+          padding 0 20px 0 20px
+        &:hover
+          color $SP-layout-bom-history-color-hover
+          background $SP-layout-bom-history-bgcolor-hover
+          .close
+            color @color
+        .close
+          position absolute
+          right 10px
+          top 9px
+          width 12px
+          height 12px
+          background transparent
+          text-align center
+          line-height 12px
+          color darken($SP-layout-bom-history-border-color, 15%)
+          cursor pointer
+          &:hover
+            color #ff0000

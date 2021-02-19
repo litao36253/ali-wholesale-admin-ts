@@ -1,0 +1,48 @@
+.ni-card {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: -3px 0px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.ni-card-header {
+  flex: none;
+  color: #495061;
+  font-size: 16px;
+  text-align: left;
+  height: 46px;
+  line-height: 46px;
+  display: block;
+  padding: 0 15px;
+  border-bottom: 1px solid #e8e9eb;
+  font-weight: bold;
+  span.action {
+    font-weight: 400;
+    font-size: 13px;
+    margin-left: 10px;
+    color: #409eff;
+    cursor: pointer;
+  }
+}
+
+.ni-card-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ni-card-main {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.ni-card-footer {
+  flex: none;
+  padding: 10px 0;
+  border-top: 1px solid #e8e9eb;
+  text-align center
+}

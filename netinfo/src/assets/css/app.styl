@@ -1,0 +1,46 @@
+//- 公用样式
+@require './commons/common'
+//- 组件样式
+@require './components/**/*'
+
+.app-router-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  transform-style: preserve-3d;
+  visibility: visible;
+}
+.rotate-fall-enter-active {
+  @extends .app-router-view
+  z-index: 1;
+  animation: scaleUp 0.7s ease both;
+}
+.rotate-fall-leave-active {
+  @extends .app-router-view
+  z-index: 999;
+  transform-origin: 0% 0%;
+  animation: rotateFall 1s both ease-in;
+}
+@keyframes rotateFall {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  20% {
+    transform: rotateZ(10deg);
+    animation-timing-function: ease-out;
+  }
+  40% {
+    transform: rotateZ(17deg);
+  }
+  60% {
+    transform: rotateZ(16deg);
+  }
+  100% {
+    transform: translateY(100%) rotateZ(17deg);
+  }
+}

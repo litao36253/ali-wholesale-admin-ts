@@ -1,0 +1,125 @@
+$display=inline-block
+.bar-header
+  display flex
+  height 60px
+  box-sizing border-box
+  .menu-switch
+    width 48px
+    height 60px
+    text-align center
+    line-height 60px
+    border-right $SP-layout-border-color 1px solid
+    cursor pointer
+    .iconfont
+      font-size 22px
+    &:hover
+      color darken(#0486FE, 15%)
+  .bar-user-status
+    flex 1
+  .bar-user-info
+    width 250px
+    text-align right
+    margin-right 15px
+    > div
+      display inline-block
+      width auto
+      cursor pointer
+      &:hover
+        background $SP-layout-header-bgcolor-hover
+    .popover-parent
+      display block
+      height 60px
+      line-height 40px
+      padding 10px
+      color $SP-layout-header-text-color
+      user-select none
+      box-sizing border-box
+      border-radius $SP-border-radius
+      img
+        width 30px
+        height 30px
+        border-radius 50px
+    .now
+      user-select auto
+    .user-info-ellipsis
+      width 50px
+    .user-role-change
+      color $SP-layout-header-text-color
+      text-overflow ellipsis
+    .system-notify, .system-language
+      .iconfont
+        font-size 20px
+    .system-language
+      .iconfont
+        color $color-primary
+.popper-notify
+  padding 0 !important
+  background $SP-layout-header-bgcolor-hover !important
+  .el-tabs__content
+    padding 0
+  .el-checkbox
+    margin 0 10px 0 10px
+  .el-tabs__nav
+    display flex
+    width 100%
+    .el-tabs__item
+      flex 1
+      text-align center
+  .note-wrap
+    padding 0
+    margin 0
+    .note-item
+      padding 10px 0
+      border-bottom 1px solid #d9dde0
+      .note-title
+        display $display
+        width 230px
+      .note-time
+        display $display
+        text-align right
+  .note-footer
+    line-height 32px
+    display flex
+    .note-more
+      flex 1
+      text-align right
+      padding-right 12px
+.popover-content-user
+  margin -12px
+  .avatar-info
+    padding 15px
+    .img
+      position relative
+      float left
+      margin-right 10px
+      img
+        width 40px
+        height 40px
+        border-radius 50%
+    .text
+      overflow hidden
+      line-height 18px
+      p
+        overflow hidden
+        white-space nowrap
+        text-overflow ellipsis
+        height 18px
+  .item-line
+    margin 8px 0 0 0
+    height 1px
+    background #f2f2f2
+  .item-text, .item-action
+    padding 0 15px
+    height 30px
+    line-height 30px
+  .item-action
+    height 37px
+    line-height 37px
+    cursor pointer
+    .iconfont
+      display inline-block
+      margin-right 10px
+    &:hover
+      background #f2f2f2
+img
+  vertical-align middle

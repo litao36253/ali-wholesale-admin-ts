@@ -1,0 +1,53 @@
+.ui-logo
+  width 260px
+  height 60px
+  a
+    display block
+    height 60px
+.bar-menu
+  background $SP-layout-menu-bgcolor !important
+  border-right none
+  .el-tooltip
+    padding 0 !important
+  .icon-wrap
+    position relative
+    width 64px
+    height 48px
+    align-content center
+    text-algin center
+    display flex
+    justify-content center
+    align-items center
+  .el-menu-item, .el-submenu__title
+    height 48px
+    line-height 48px
+    color $SP-layout-menu-color
+    background $SP-layout-menu-bgcolor !important
+    border-bottom $SP-layout-menu-border-color 1px solid
+    &.is-active
+      color $SP-layout-menu-color-active !important
+      background darken($SP-layout-menu-bgcolor, 25%) !important
+    &:hover
+      color $SP-layout-menu-color-hover !important
+      background darken($SP-layout-menu-bgcolor, 15%) !important
+  .el-submenu
+    &.is-active
+      .el-submenu__title
+        border-bottom $SP-layout-menu-border-color 1px solid
+  .el-menu-item.parent-top, .el-submenu__title
+    padding 0 10px !important
+  .el-submenu__title
+    .icon-wrap
+      width 44px
+  &:not(.el-menu--collapse)
+    width 168px
+    .icon-wrap
+      width 44px
+      position relative
+      float left
+    .title
+      overflow hidden
+  &.el-menu--collapse
+    .el-submenu__title
+      .title, .el-submenu__icon-arrow
+        display none
