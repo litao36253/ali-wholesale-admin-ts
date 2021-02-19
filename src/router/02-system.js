@@ -11,7 +11,8 @@ export default {
       path: '/system/menu',
       name: 'system.menu',
       meta: {
-        title: '菜单管理'
+        title: '菜单管理',
+        keepAlive: true // 缓存路由组件
       },
       component: () => import('@/views/system/menu/menu.vue')
     },
@@ -19,7 +20,8 @@ export default {
       path: '/system/dict',
       name: 'system.dict',
       meta: {
-        title: '数据字典管理'
+        title: '数据字典管理',
+        keepAlive: true // 缓存路由组件
       },
       component: () => import('@/views/system/dict/dict.vue')
     }
