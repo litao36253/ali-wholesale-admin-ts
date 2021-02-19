@@ -42,8 +42,33 @@ export const queryDict = async (param: { code?: string }, pagination: Pagination
  * @param param 参数
  * @return Promise<Result>
  */
-export const addDict = (param: { code: string, name: string, type: string, edit_enable: string, comment: string }) => {
+export const createDict = (param: { code: string, name: string, type: string, edit_enable: string, comment: string }) => {
   const collection = db.collection('uni-dict')
   const res = collection.add(param)
+  return handleResult(res)
+}
+
+/**
+ * 修改数据字典
+ * @param param 参数
+ * @return Promise<Result>
+ */
+export const updateDict = (param: { _id: string, code: string, name: string, type: string, edit_enable: string, comment: string }) => {
+  const collection = db.collection('uni-dict')
+  const res = collection.doc(param._id).update({
+    ...param,
+    _id: undefined
+  })
+  return handleResult(res)
+}
+
+/**
+ * 修改数据字典
+ * @param param 参数
+ * @return Promise<Result>
+ */
+export const deleteDict = (_id: string) => {
+  const collection = db.collection('uni-dict')
+  const res = collection.doc(_id).remove()
   return handleResult(res)
 }

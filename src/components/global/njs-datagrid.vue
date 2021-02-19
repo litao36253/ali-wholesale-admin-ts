@@ -237,7 +237,7 @@ export default class NjsDatagrid extends Vue {
 
   public readonly formData: {[key: string] : any} = {} // 查询条件绑定的数据
 
-  protected loading = false
+  public loading = false
 
   protected selection = []
 

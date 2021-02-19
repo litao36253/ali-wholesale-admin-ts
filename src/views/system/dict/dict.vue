@@ -1,5 +1,5 @@
 <template>
-  <div class="dict-wrap">
+  <div v-loading="loading" class="dict-wrap">
     <njs-datagrid
       ref="datagrid"
       datagridId="system.dict"
@@ -90,6 +90,8 @@ export default class Dict extends Vue {
   @Ref('datagrid')
   protected datagrid: Datagrid
 
+  protected loading = false
+
   protected editDialogVisible = false
 
   protected editDialogLoading = false
@@ -97,6 +99,7 @@ export default class Dict extends Vue {
   protected editDialogType = 'create' // 编辑弹框的类型，取值：create、update
 
   protected editFormModel = {
+    _id: undefined,
     code: '',
     name: '',
     type: '',
@@ -124,10 +127,11 @@ export default class Dict extends Vue {
     this.editForm.validate(async (valid) => {
       if (valid) {
         this.editDialogLoading = true
-        const res = await this.$jql.system.dict.addDict(this.editFormModel)
+        const serve = this.editDialogType === 'create' ? this.$jql.system.dict.createDict : this.$jql.system.dict.updateDict
+        const res = await serve(this.editFormModel)
         this.editDialogLoading = false
         if (!res.code) {
-          this.$message.success('创建数据字典成功')
+          this.$message.success(this.editDialogType === 'create' ? '创建数据字典成功' : '修改数据字典成功')
           this.editDialogVisible = false
           this.datagrid.refresh()
         }
@@ -142,14 +146,41 @@ export default class Dict extends Vue {
   protected handleUpdate (row) {
     this.editDialogVisible = true
     this.editDialogType = 'update'
+    this.$nextTick(() => {
+      this.editFormModel._id = row._id
+      this.editFormModel.code = row.code
+      this.editFormModel.name = row.name
+      this.editFormModel.type = row.type
+      this.editFormModel.edit_enable = row.edit_enable
+      this.editFormModel.comment = row.comment
+    })
   }
 
   protected handleDelete (row) {
-    console.log(row)
+    this.$confirm('您确定要删除该数据字典吗？', '提示', { type: 'warning' }).then(async () => {
+      this.loading = true
+      const res = await this.$jql.system.dict.deleteDict(row._id)
+      this.loading = false
+      if (!res.code) {
+        this.$message.success('删除数据字典成功')
+        this.editDialogVisible = false
+        this.datagrid.refresh()
+      }
+    }).catch(e => {
+      if (e === 'cancel') {
+        this.$message.info('取消删除')
+      } else {
+        throw e
+      }
+    })
   }
 
   protected handleDialogClose () {
     this.editForm.resetFields()
+    this.editFormModel._id = undefined
+    setTimeout(() => {
+      console.log('this.editFormModel', this.editFormModel)
+    }, 100)
   }
 }
 </script>
