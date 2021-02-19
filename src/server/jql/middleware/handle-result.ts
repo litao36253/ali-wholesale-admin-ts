@@ -29,6 +29,7 @@ export default async (res: Promise<any>, countRes?: Promise<any>): Promise<Resul
     return response
   }).catch(e => {
     Message.error('服务器出错了，请稍候再试！')
-    throw e
+    console.error(e)
+    return { code: -9999, error: e }
   })
 }

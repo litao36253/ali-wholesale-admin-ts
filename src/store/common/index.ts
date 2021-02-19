@@ -1,5 +1,5 @@
-import mutations from './mutations.js'
-import action from './action.js'
+import mutations from './mutations'
+import action from './action'
 
 export default {
   namespaced: true,

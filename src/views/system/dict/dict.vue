@@ -19,7 +19,7 @@
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="creator_username" label="创建人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="create_time" label="创建时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
-      <njs-datagrid-column label="操作" min-width="160" fixed="right">
+      <njs-datagrid-column label="操作" min-width="180" fixed="right">
         <template v-slot="{ row }">
           <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
           <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleUpdate(row)">修改</el-button>
@@ -32,44 +32,44 @@
       </template>
     </njs-datagrid>
 
-    <el-dialog :visible.sync="editDialogVisible" :title="editDialogType === 'create' ? '新增数据字典' : '修改数据字典'" @close="handleDialogClose">
-      <el-form ref="editForm" :model="editFormModel" label-width="70px">
+    <el-dialog :visible.sync="editDialogVisible" width="800px" :close-on-click-modal="false" :title="editDialogType === 'create' ? '新增数据字典' : '修改数据字典'" @close="handleDialogClose">
+      <el-form ref="editForm" :model="editFormModel" label-width="80px">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="字典编号" prop="code">
+            <el-form-item label="字典编号" prop="code" :rules="[{ required: true, message: '请输入字典编号' }]">
               <el-input v-model="editFormModel.code" placeholder="请输入字典编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="字典名称" prop="name">
+            <el-form-item label="字典名称" prop="name" :rules="[{ required: true, message: '请输入字典名称' }]">
               <el-input v-model="editFormModel.name" placeholder="请输入字典名称"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="字典分类" prop="type">
+            <el-form-item label="字典分类" prop="type" :rules="[{ required: true, message: '请选择字典分类' }]">
               <el-input v-model="editFormModel.type" placeholder="请选择字典分类"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="维护标识" prop="edit_enable">
-              <el-input v-model="editFormModel.edit_enable" placeholder=""></el-input>
-
+            <el-form-item label="维护标识" prop="edit_enable" :rules="[{ required: true, message: '请选择维护标识' }]">
+              <el-input v-model="editFormModel.edit_enable" placeholder="请选择维护标识"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="comment">
-              <el-input v-model="editFormModel.comment" placeholder=""></el-input>
+              <el-input v-model="editFormModel.comment" type="textarea" :rows="5" :maxlength="180" resize="none" show-word-limit placeholder="请输入备注"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <span slot="footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitDict">确定</el-button>
+        <el-radio-group></el-radio-group>
+        <el-button :disabled="editDialogLoading" @click="editDialogVisible = false">取消</el-button>
+        <el-button :loading="editDialogLoading" type="primary" @click="handleSubmitDict">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -92,6 +92,8 @@ export default class Dict extends Vue {
 
   protected editDialogVisible = false
 
+  protected editDialogLoading = false
+
   protected editDialogType = 'create' // 编辑弹框的类型，取值：create、update
 
   protected editFormModel = {
@@ -106,6 +108,7 @@ export default class Dict extends Vue {
     return [
       {
         text: '新增字典',
+        icon: 'el-icon-plus',
         handler: () => {
           this.editDialogVisible = true
           this.editDialogType = 'create'
@@ -115,13 +118,20 @@ export default class Dict extends Vue {
   }
 
   protected mounted () {
-    // this.$jql.system.dict.queryDict()
-    // this.datagrid.doLayout()
   }
 
-  protected handleSubmitDict () {
-    this.$jql.system.dict.addDict(this.editFormModel).then(res => {
-      console.log('res', res)
+  protected async handleSubmitDict () {
+    this.editForm.validate(async (valid) => {
+      if (valid) {
+        this.editDialogLoading = true
+        const res = await this.$jql.system.dict.addDict(this.editFormModel)
+        this.editDialogLoading = false
+        if (!res.code) {
+          this.$message.success('创建数据字典成功')
+          this.editDialogVisible = false
+          this.datagrid.refresh()
+        }
+      }
     })
   }
 

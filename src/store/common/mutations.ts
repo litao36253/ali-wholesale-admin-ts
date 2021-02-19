@@ -5,7 +5,7 @@ export default {
   changeKeepAliveRoutes (state, payload) {
     const keepAliveRoutes = new Set(state.keepAliveRoutes)
     if (payload.type === 'remove') {
-      keepAliveRoutes.remove(payload.name)
+      keepAliveRoutes.delete(payload.name)
     } else {
       keepAliveRoutes.add(payload.name)
     }

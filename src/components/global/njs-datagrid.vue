@@ -12,7 +12,7 @@
       </div>
       <div class="njs-datagrid-buttons">
         <template v-for="(btn, i) in buttonList">
-          <el-button v-if="!btn.prevButton" :key="`topBtnList${i}`" size="small" :icon="btn.icon"
+          <el-button v-if="!btn.prevButton" :key="`topBtnList${i}`" type="primary" size="small" :icon="btn.icon"
             :disabled="btn.disabled" @click="btnListClick($event,btn)">{{ btn.text }}</el-button>
         </template>
       </div>
