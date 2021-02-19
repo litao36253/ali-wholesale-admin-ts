@@ -5,8 +5,8 @@ export default {
   namespaced: true,
   state: {
     userInfo: {
-      username: 'litao'
-    }
+    },
+    keepAliveRoutes: [] // 需要缓存的路由组件集合
   },
   mutations,
   action
