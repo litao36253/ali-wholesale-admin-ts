@@ -22,7 +22,7 @@
       <njs-datagrid-column label="操作" min-width="160" fixed="right">
         <template v-slot="{ row }">
           <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
-          <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleEdit(row)">修改</el-button>
+          <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleUpdate(row)">修改</el-button>
           <el-button type="text" :disabled="row.edit_enable === '2' || row.edit_enable === '3'" @click.stop="handleDelete(row)">删除</el-button>
         </template>
       </njs-datagrid-column>
@@ -32,23 +32,40 @@
       </template>
     </njs-datagrid>
 
-    <el-dialog :visible.sync="editDialogVisible" @close="handleDialogClose">
-      <el-form ref="editForm" :model="editFormModel">
-        <el-form-item label="字典编号" prop="code">
-          <el-input v-model="editFormModel.code" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="字典名称" prop="name">
-          <el-input v-model="editFormModel.name" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="字典分类" prop="type">
-          <el-input v-model="editFormModel.type" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="维护标识" prop="edit_enable">
-          <el-input v-model="editFormModel.edit_enable" placeholder=""></el-input>
-        </el-form-item>
-        <el-form-item label="备注" prop="comment">
-          <el-input v-model="editFormModel.comment" placeholder=""></el-input>
-        </el-form-item>
+    <el-dialog :visible.sync="editDialogVisible" :title="editDialogType === 'create' ? '新增数据字典' : '修改数据字典'" @close="handleDialogClose">
+      <el-form ref="editForm" :model="editFormModel" label-width="70px">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="字典编号" prop="code">
+              <el-input v-model="editFormModel.code" placeholder="请输入字典编号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="字典名称" prop="name">
+              <el-input v-model="editFormModel.name" placeholder="请输入字典名称"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="字典分类" prop="type">
+              <el-input v-model="editFormModel.type" placeholder="请选择字典分类"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="维护标识" prop="edit_enable">
+              <el-input v-model="editFormModel.edit_enable" placeholder=""></el-input>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="comment">
+              <el-input v-model="editFormModel.comment" placeholder=""></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <span slot="footer">
         <el-button @click="editDialogVisible = false">取消</el-button>
@@ -75,6 +92,8 @@ export default class Dict extends Vue {
 
   protected editDialogVisible = false
 
+  protected editDialogType = 'create' // 编辑弹框的类型，取值：create、update
+
   protected editFormModel = {
     code: '',
     name: '',
@@ -89,6 +108,7 @@ export default class Dict extends Vue {
         text: '新增字典',
         handler: () => {
           this.editDialogVisible = true
+          this.editDialogType = 'create'
         }
       }
     ]
@@ -109,8 +129,9 @@ export default class Dict extends Vue {
     console.log(row)
   }
 
-  protected handleEdit (row) {
-    console.log(row)
+  protected handleUpdate (row) {
+    this.editDialogVisible = true
+    this.editDialogType = 'update'
   }
 
   protected handleDelete (row) {

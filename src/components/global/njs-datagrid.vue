@@ -87,7 +87,7 @@
     </div>
 
     <div class="njs-datagrid-table">
-      <el-table ref="table" :key="`${datagridId}_table`" :row-key="rowKey" :fit="true" stripe
+      <el-table ref="table" :key="`${datagridId}_table`" :row-key="rowKey" :fit="true"
         :highlight-current-row="singleSelect" :data="tableData" :style="{width: '100%'}" height="100%"
         :empty-text="emptyText" @selection-change="handleSelectionChange"
         header-row-class-name="njs-datagrid-table-header" size="medium"
