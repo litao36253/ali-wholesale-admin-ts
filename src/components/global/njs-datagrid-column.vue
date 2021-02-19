@@ -1,12 +1,12 @@
 <template>
   <el-table-column v-if="showColum" :type="type" :prop="prop" :index="index" :column-key="columnKey" :width="width" :min-width="minWidth" :fixed="fixed" :render-header="renderHeader" :sortable="sortable" :sort-method="sortMethod" :sort-by="sortBy" :sort-orders="sortOrders" :resizable="resizable" :formatter="realFormatter" :show-overflow-tooltip="showOverflowTooltip" :align="align" :header-align="headerAlign" :class-name="className" :label-class-name="labelClassName" :selectable="selectable" :reserve-selection="reserveSelection" :filters="filters" :filter-placement="filterPlacement" :filter-multiple="filterMultiple" :filter-method="filterMethod" :filtered-value="filteredValue">
     <template v-slot="{ row, column, $index }">
-      <template v-if="type==='state'">
-        <el-tag :type="stateMap[row[prop]]" size="medium">{{realFormatter(row,column,row[prop],$index)}}</el-tag>
+      <template v-if="type === 'state'">
+        <el-tag :type="stateMap[row[prop]]" size="medium">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
       </template>
       <template v-else-if="type === 'time'">{{ moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') }}</template>
-      <template v-else-if="type==='color'">
-        <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{realFormatter(row,column,row[prop],$index)}}</el-tag>
+      <template v-else-if="type === 'color'">
+        <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
       </template>
       <slot v-else-if="$scopedSlots['default']" :row="row" :column="column" :$index="$index"></slot>
       <template v-else>{{ realFormatter(row,column,row[prop],$index) }}</template>
@@ -119,6 +119,7 @@ export default {
     },
     // 获取数据字典
     getDict () {
+      // @todo
       return ''
     },
     moment
