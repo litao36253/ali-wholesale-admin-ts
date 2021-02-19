@@ -69,6 +69,9 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done()
   document.title = `后台管理系统${to.meta?.title ? '-' + to.meta.title : ''}`
+  if (to.meta.keepAlive) {
+    store.commit('common/changeKeepAliveRoutes', { type: 'add', name: to.name })
+  }
 })
 
 export default router
