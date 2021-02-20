@@ -128,7 +128,7 @@
       >
       </el-pagination>
     </div>
-    <slot name="fixed-card" :formData="formData"></slot>
+    <slot name="drawer" :formData="formData"></slot>
   </div>
 </template>
 
@@ -304,6 +304,7 @@ export default class NjsDatagrid extends Vue {
         }
       })
     }
+
     // 初始化创建表格的列集合和表格显示的列集合
     this.table.$children.forEach((item: any) => {
       if (item.prop) {
@@ -401,6 +402,9 @@ export default class NjsDatagrid extends Vue {
           this.$emit('load-success', result)
         }
         return result
+      }).catch(e => {
+        this.loading = false
+        throw e
       })
       this.total = result.total
       this.realDuration = result.duration

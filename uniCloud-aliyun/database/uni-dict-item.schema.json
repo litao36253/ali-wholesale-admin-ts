@@ -60,7 +60,7 @@
 			"description": "最后修改人",
 			"foreignKey": "uni-id-users._id"
 		},
-		"update_date": {
+		"update_time": {
 			"bsonType": "timestamp",
 			"description": "最后修改时间"
 		}

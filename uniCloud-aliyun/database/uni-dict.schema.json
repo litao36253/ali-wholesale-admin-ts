@@ -64,17 +64,17 @@
 			"description": "是否已删除",
 			"defaultValue": false
 		},
-		"creator": {
+		"last_reviser": {
 			"bsonType": "string",
-			"description": "创建人",
+			"description": "最后修改人",
 			"foreignKey": "uni-id-users._id",
       "forceDefaultValue": {
         "$env": "uid"
       }
 		},
-		"create_time": {
+		"update_time": {
 			"bsonType": "timestamp",
-			"description": "创建时间",
+			"description": "最后修改时间",
       "forceDefaultValue": {
         "$env": "now"
       }

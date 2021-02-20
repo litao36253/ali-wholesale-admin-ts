@@ -1,52 +1,27 @@
 <template>
-  <div v-loading="loading" class="dict-wrap">
+  <div v-loading="loading" class="wrap">
     <njs-datagrid
       ref="datagrid"
-      datagridId="system.dict"
-      :service="$jql.system.dict.queryDict"
+      datagridId="system.dict.itme"
+      :service="$jql.system.dict.queryDictItem"
       rowKey="_id"
-      title="数据字典管理"
-      subheading="开发人员维护数据字典"
+      title="字典项管理"
+      subheading="开发人员维护数据字典项"
       :button-list="btnList"
-      single-select
       autoLoading
-      @row-click="handlerShowDetails"
     >
       <njs-datagrid-column prop="code" label="字典编号" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="name" label="字典名称" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></njs-datagrid-column>
-      <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
-      <njs-datagrid-column prop="last_reviser_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="update_time" label="最后修改时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
-      <njs-datagrid-column label="操作" min-width="180" fixed="right">
+      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="100" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></njs-datagrid-column>
+      <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="creator_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="create_time" label="最后修改时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
+      <njs-datagrid-column label="操作" min-width="120">
         <template v-slot="{ row }">
-          <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
           <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleUpdate(row)">修改</el-button>
           <el-button type="text" :disabled="row.edit_enable === '2' || row.edit_enable === '3'" @click.stop="handleDelete(row)">删除</el-button>
         </template>
       </njs-datagrid-column>
-
-      <template v-slot:query="{ formData }">
-        <el-form-item prop="code" label="字典编号">
-          <el-input v-model="formData.code" placeholder="请输入字典编号"></el-input>
-        </el-form-item>
-        <el-form-item prop="name" label="字典名称">
-          <el-input v-model="formData.name" placeholder="请输入字典名称"></el-input>
-        </el-form-item>
-        <el-form-item prop="type" label="字典类型">
-          <el-input v-model="formData.type" placeholder="请选择字典类型"></el-input>
-        </el-form-item>
-        <el-form-item prop="code">
-          <el-button type="primary" size="small" @click="datagrid.refresh">查询</el-button>
-        </el-form-item>
-      </template>
-
-      <template v-slot:drawer>
-        <njs-datagrid-drawer :visible.sync="drawerVisible" :width="920" hideTitle>
-          <DictItemManage :dictCode="currentRow.code || ''"/>
-        </njs-datagrid-drawer>
-      </template>
     </njs-datagrid>
 
     <el-dialog :visible.sync="editDialogVisible" width="800px" :close-on-click-modal="false" :title="editDialogType === 'create' ? '新增数据字典' : '修改数据字典'" @close="handleDialogClose">
@@ -71,7 +46,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="维护标识" prop="edit_enable" :rules="[{ required: true, message: '请选择维护标识' }]">
-              <!-- <el-input v-model="editFormModel.edit_enable" placeholder="请选择维护标识"></el-input> -->
               <el-radio-group v-model="editFormModel.edit_enable" dict="test">
                 <el-radio label="1">可维护</el-radio>
               </el-radio-group>
@@ -96,16 +70,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Component, Ref, Prop, Vue } from 'vue-property-decorator'
 import { Form } from 'element-ui'
 import Datagrid from '@/components/global/njs-datagrid.vue'
-import DictItemManage from './dict-item-manage.vue'
 
 @Component({
-  name: 'system.dict',
-  components: { DictItemManage }
+  name: 'system.dict.item'
 })
 export default class Dict extends Vue {
+  @Prop({
+    type: String,
+    required: true
+  })
+  protected dictCode
+
   @Ref('editForm')
   protected editForm: Form
 
@@ -119,10 +97,6 @@ export default class Dict extends Vue {
   protected editDialogLoading = false
 
   protected editDialogType = 'create' // 编辑弹框的类型，取值：create、update
-
-  protected currentRow = {} // 当前选中的行
-
-  protected drawerVisible = false
 
   protected editFormModel = {
     _id: undefined,
@@ -166,8 +140,7 @@ export default class Dict extends Vue {
   }
 
   protected handlerShowDetails (row) {
-    this.currentRow = row
-    this.drawerVisible = true
+    console.log(row)
   }
 
   protected handleUpdate (row) {
@@ -205,13 +178,17 @@ export default class Dict extends Vue {
   protected handleDialogClose () {
     this.editForm.resetFields()
     this.editFormModel._id = undefined
+    setTimeout(() => {
+      console.log('this.editFormModel', this.editFormModel)
+    }, 100)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .dict-wrap {
-    background-color: #fff;
+  .wrap {
+    box-sizing: border-box;
     height: 100%;
+    // padding: 20px;
   }
 </style>

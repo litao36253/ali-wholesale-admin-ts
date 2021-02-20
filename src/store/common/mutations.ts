@@ -1,7 +1,12 @@
 export default {
+  changeDict (state, payload) {
+    state.dict = payload
+  },
+
   changeUserInfo (state, payload) {
     state.userInfo = payload
   },
+
   changeKeepAliveRoutes (state, payload) {
     const keepAliveRoutes = new Set(state.keepAliveRoutes)
     if (payload.type === 'remove') {

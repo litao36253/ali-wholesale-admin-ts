@@ -9,28 +9,29 @@ const db = uniCloud.database()
  * @param pagination 分页参数
  * @return Promise<Result>
  */
-export const queryDict = async (param: { code?: string }, pagination: Pagination) => {
+export const queryDict = async (param: { code?: string, name: string, type: string }, pagination: Pagination) => {
   const collection = db.collection('uni-dict,uni-id-users')
-
-  const res = collection.where({
-    ...param,
+  const query = {
+    code: new RegExp(param.code, 'i'),
+    name: new RegExp(param.name, 'i'),
+    type: new RegExp(param.type, 'i'),
     is_delete: false
-  })
-    .field('code, name, type, edit_enable, comment, creator{username}, create_time')
+  }
+  const res = collection.where(query)
+    .field('code, name, type, edit_enable, comment, last_reviser{username}, update_time')
+    .orderBy('update_time', 'desc')
     .skip(pagination.pageSize * (pagination.currentPage - 1))
     .limit(pagination.pageSize)
     .get()
 
-  const countRes = collection.where({
-    ...param
-  }).count()
+  const countRes = collection.where(query).count()
 
   const result = await handleResult(res, countRes)
 
   result.data = result.data.map(item => {
-    item.creator = item.creator[0]
-    item.creator_id = item.creator?._id
-    item.creator_username = item.creator?.username
+    item.last_reviser = item.last_reviser && item.last_reviser[0]
+    item.last_reviser_id = item.last_reviser?._id
+    item.last_reviser_username = item.last_reviser?.username
     return item
   })
 
@@ -69,6 +70,41 @@ export const updateDict = (param: { _id: string, code: string, name: string, typ
  */
 export const deleteDict = (_id: string) => {
   const collection = db.collection('uni-dict')
-  const res = collection.doc(_id).remove()
+  const res = collection.doc(_id).update({
+    is_delete: true
+  })
   return handleResult(res)
+}
+
+/**
+ * 查询数据字典项
+ * @param param 查询参数
+ * @param pagination 分页参数
+ * @return Promise<Result>
+ */
+export const queryDictItem = async (param: { dictCode?: string }, pagination: Pagination) => {
+  const collection = db.collection('uni-dict-item,uni-id-users')
+  const query = {
+    dict_code: new RegExp(param.dictCode, 'i'),
+    is_delete: false
+  }
+  const res = collection.where(query)
+    .field('dict_item_code, dict_item_name, edit_enable, comment, last_reviser{username}, update_time')
+    .orderBy('update_time', 'desc')
+    .skip(pagination.pageSize * (pagination.currentPage - 1))
+    .limit(pagination.pageSize)
+    .get()
+
+  const countRes = collection.where(query).count()
+
+  const result = await handleResult(res, countRes)
+
+  result.data = result.data.map(item => {
+    item.last_reviser = item.last_reviser && item.last_reviser[0]
+    item.last_reviser_id = item.last_reviser?._id
+    item.last_reviser_username = item.last_reviser?.username
+    return item
+  })
+
+  return result
 }
