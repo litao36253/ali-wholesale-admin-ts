@@ -47,16 +47,14 @@ export default {
         if (validateResult) {
           this.loading = true
           const res = await baseServer(baseApi.apiLogin, this.formModel)
-          this.loading = false
-
           if (res.code) { // 登录失败
+            this.loading = false
             return
           }
-
           this.$store.commit('common/changeUserInfo', res.userInfo)
-
+          await this.$store.dispatch('common/queryAllDict')
+          this.loading = false
           const redirectPath = this.$route.query.redirect || '/'
-
           this.$router.replace(redirectPath)
         }
       })
