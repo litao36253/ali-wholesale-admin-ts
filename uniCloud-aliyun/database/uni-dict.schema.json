@@ -31,10 +31,10 @@
 			"defaultValue": "0",
 			"enum": [{
 				"text": "系统公用",
-				"value": "0"
+				"value": "system"
 			}, {
 				"text": "商品管理",
-				"value": "1"
+				"value": "shopping"
 			}]
 		},
 		"edit_enable": {

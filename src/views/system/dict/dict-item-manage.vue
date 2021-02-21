@@ -14,7 +14,7 @@
       <njs-datagrid-column prop="number" label="No." show-overflow-tooltip sortable min-width="70"></njs-datagrid-column>
       <njs-datagrid-column prop="dict_item_code" label="字典项编号" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="dict_item_name" label="字典项名称" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="100" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
+      <njs-datagrid-column prop="edit_enable" label="维护标识" dict="edit_enable" sortable min-width="100" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="last_reviser_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="update_time" label="最后修改时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
@@ -48,9 +48,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="维护标识" prop="edit_enable" :rules="[{ required: true, message: '请选择维护标识' }]">
-              <el-radio-group v-model="editFormModel.edit_enable" dict="edit_enable">
-                <el-radio label="maintainable">可维护</el-radio>
-              </el-radio-group>
+              <el-radio-group v-model="editFormModel.edit_enable" dict="edit_enable"></el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>

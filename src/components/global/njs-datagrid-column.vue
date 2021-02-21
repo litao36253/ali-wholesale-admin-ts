@@ -91,7 +91,7 @@ export default {
     realFormatter (row, column, cellValue, index) {
       if (this.formatter) {
         if (this.dict) {
-          return this.formatter(row, column, this.getDict(this.dict, cellValue), index)
+          return this.formatter(row, column, this.$utils.getDict(this.dict, cellValue), index)
         } else {
           return this.formatter(row, column, cellValue, index)
         }
@@ -106,9 +106,9 @@ export default {
           let val = ''
           dicts.forEach((item, index) => {
             if (index === 0) {
-              val += this.getDict(this.dict, item)
+              val += this.$utils.getDict(this.dict, item)
             } else {
-              val += ',' + this.getDict(this.dict, item)
+              val += ',' + this.$utils.getDict(this.dict, item)
             }
           })
           return val
@@ -116,11 +116,6 @@ export default {
           return cellValue
         }
       }
-    },
-    // 获取数据字典
-    getDict () {
-      // @todo
-      return ''
     },
     moment
   },

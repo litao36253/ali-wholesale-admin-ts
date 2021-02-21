@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
     } else {
       const token = uni.getStorageSync('uni_id_token')
       if (token) {
-        baseServer(baseApi.apiCheckToken).then(res => {
+        baseServer(baseApi.apiCheckToken).then(async (res) => {
           if (res.code) {
             next({
               path: '/user/login',
@@ -50,6 +50,9 @@ router.beforeEach((to, from, next) => {
             return
           }
           store.commit('common/changeUserInfo', res.userInfo)
+
+          await store.dispatch('common/queryAllDict')
+
           next()
         })
       } else {

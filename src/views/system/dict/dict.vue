@@ -14,8 +14,8 @@
     >
       <njs-datagrid-column prop="code" label="字典编号" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="name" label="字典名称" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
+      <njs-datagrid-column prop="type" label="字典分类" dict="dict_type" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="edit_enable" label="维护标识" dict="edit_enable" sortable min-width="120" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
       <njs-datagrid-column prop="last_reviser_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="update_time" label="最后修改时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
@@ -35,7 +35,7 @@
           <el-input v-model="formData.name" placeholder="请输入字典名称"></el-input>
         </el-form-item>
         <el-form-item prop="type" label="字典类型">
-          <el-input v-model="formData.type" placeholder="请选择字典类型"></el-input>
+          <el-select v-model="formData.type" dict="dict_type" placeholder="请选择字典类型" @change="datagrid.refresh"></el-select>
         </el-form-item>
         <el-form-item prop="code">
           <el-button type="primary" size="small" @click="datagrid.refresh">查询</el-button>
@@ -66,15 +66,12 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="字典分类" prop="type" :rules="[{ required: true, message: '请选择字典分类' }]">
-              <el-input v-model="editFormModel.type" placeholder="请选择字典分类"></el-input>
+              <el-select v-model="editFormModel.type" dict="dict_type" placeholder="请选择字典类型"></el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="维护标识" prop="edit_enable" :rules="[{ required: true, message: '请选择维护标识' }]">
-              <!-- <el-input v-model="editFormModel.edit_enable" placeholder="请选择维护标识"></el-input> -->
-              <el-radio-group v-model="editFormModel.edit_enable" dict="edit_enable">
-                <el-radio label="maintainable">可维护</el-radio>
-              </el-radio-group>
+              <el-radio-group v-model="editFormModel.edit_enable" dict="edit_enable"></el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>

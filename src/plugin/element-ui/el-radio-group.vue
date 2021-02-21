@@ -9,8 +9,8 @@
   >
     <template v-if="autoCreateButton">
       <el-radio-button
-        v-for="(item,index) in dictList"
-        :key="index"
+        v-for="item in dictList"
+        :key="item.dict_item_code"
         :label="item.dict_item_code"
         :disabled="setDisabled(item.dict_item_code)"
       >
@@ -19,8 +19,8 @@
     </template>
     <template v-else>
       <el-radio
-        v-for="(item,index) in dictList"
-        :key="index"
+        v-for="item in dictList"
+        :key="item.dict_item_code"
         :label="item.dict_item_code"
         :disabled="setDisabled(item.dict_item_code)"
         :border="autoCreateBorder"
@@ -34,17 +34,16 @@
 </template>
 
 <script>
-import ElRadioGroup from 'element-ui/packages/radio/src/radio-group'
+import { RadioGroup } from 'element-ui'
 
 export default {
   components: {
-    NativeElRadioGroup: ElRadioGroup
+    NativeElRadioGroup: RadioGroup
   },
   props: {
     value: {
-      type: String,
-      default: ''
-    }, // v-modle
+      type: [String, Number]
+    },
     size: String, // 尺寸
     fill: String, // 按钮形式的 Radio 激活时的填充色和边框色
     textColor: String, // 按钮形式的 Radio 激活时的文本颜色

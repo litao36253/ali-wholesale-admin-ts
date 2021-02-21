@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import jql from './server/jql/jql'
 import * as utils from './utils/utils'
+
 declare module '*.vue' {
   export default Vue
 }

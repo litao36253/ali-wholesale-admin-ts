@@ -89,7 +89,7 @@ export const queryDictItem = async (param: { dict_code?: string }, pagination: P
     is_delete: false
   }
   const res = collection.where(query)
-    .field('dict_item_code, dict_item_name, number, edit_enable, comment, last_reviser{username}, update_time')
+    .field('dict_code, dict_item_code, dict_item_name, number, edit_enable, comment, last_reviser{username}, update_time')
     .orderBy('update_time', 'desc')
     .orderBy('number', 'asc')
     .skip(pagination.pageSize * (pagination.currentPage - 1))

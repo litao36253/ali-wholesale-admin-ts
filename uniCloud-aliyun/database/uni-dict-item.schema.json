@@ -63,7 +63,10 @@
 		"last_reviser": {
 			"bsonType": "string",
 			"description": "最后修改人",
-			"foreignKey": "uni-id-users._id"
+			"foreignKey": "uni-id-users._id",
+		  "forceDefaultValue": {
+		    "$env": "uid"
+		  }
 		},
 		"update_time": {
 			"bsonType": "timestamp",

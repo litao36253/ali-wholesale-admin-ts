@@ -1,5 +1,5 @@
 import mutations from './mutations'
-import action from './action'
+import actions from './actions'
 
 export default {
   namespaced: true,
@@ -21,5 +21,5 @@ export default {
     } // 数据字典
   },
   mutations,
-  action
+  actions
 }
