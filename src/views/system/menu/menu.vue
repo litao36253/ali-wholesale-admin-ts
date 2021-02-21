@@ -2,6 +2,8 @@
   <div>
     主页内容
     <el-button>按钮</el-button>
+    {{arr}}
+    <el-checkbox-group v-model="arr" dict="edit_enable"></el-checkbox-group>
     <el-table :data="data">
       <el-table-column label="字段1" prop="colum1"></el-table-column>
       <el-table-column label="字段2" prop="colum2"></el-table-column>
@@ -44,6 +46,8 @@ export default class Menu extends Vue {
       colum4: 'colum4'
     }
   ]
+
+  protected arr = []
 }
 </script>
 

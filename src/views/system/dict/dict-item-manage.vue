@@ -181,9 +181,6 @@ export default class Dict extends Vue {
   protected handleDialogClose () {
     this.editForm.resetFields()
     this.editFormModel._id = undefined
-    setTimeout(() => {
-      console.log('this.editFormModel', this.editFormModel)
-    }, 100)
   }
 
   @Watch('dictCode')
@@ -195,8 +192,6 @@ export default class Dict extends Vue {
 
 <style lang="scss" scoped>
   .wrap {
-    box-sizing: border-box;
     height: 100%;
-    // padding: 20px;
   }
 </style>

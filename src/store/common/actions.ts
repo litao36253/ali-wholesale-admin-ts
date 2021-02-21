@@ -4,7 +4,7 @@ import groupBy from 'lodash/groupBy'
 export default {
   // 查询所有的数据字典
   async queryAllDict ({ commit }) {
-    const pageSize = 100
+    const pageSize = 500 // 阿里云一次最多查询500条数据，腾讯云不知道，万一腾讯云支持一次查询数量小后期在做兼容
     let currentPage = 1
     const res = await jql.system.dict.queryDictItem({}, { pageSize, currentPage })
     if (res.code) {

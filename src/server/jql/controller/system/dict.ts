@@ -43,7 +43,7 @@ export const queryDict = async (param: { code?: string, name: string, type: stri
  * @param param 参数
  * @return Promise<Result>
  */
-export const createDict = (param: { code: string, name: string, type: string, edit_enable: string, comment: string }) => {
+export const createDict = async (param: { code: string, name: string, type: string, edit_enable: string, comment: string }) => {
   const collection = db.collection('uni-dict')
   const res = collection.add(param)
   return handleResult(res)
@@ -68,12 +68,26 @@ export const updateDict = (param: { _id: string, code: string, name: string, typ
  * @param param 参数
  * @return Promise<Result>
  */
-export const deleteDict = (_id: string) => {
-  const collection = db.collection('uni-dict')
-  const res = collection.doc(_id).update({
-    is_delete: true
-  })
-  return handleResult(res)
+export const deleteDict = async (_id: string) => {
+  const transaction = await db.startTransaction() // 发起事务
+  try {
+    const collection = db.collection('uni-dict')
+    const currentDict = collection.doc(_id)
+    const currentDictCode = (await currentDict.field('code').get()).result.data[0].code
+    await currentDict.update({
+      is_delete: true
+    })
+    await currentDict.remove()
+    await db.collection('uni-dict-item').where({
+      dict_code: currentDictCode
+    }).update({
+      is_delete: true
+    })
+    return handleResult(transaction.commit()) // 提交事务
+  } catch (e) {
+    await transaction.rollback() // 回滚事务
+    return handleResult(e)
+  }
 }
 
 /**
@@ -115,10 +129,26 @@ export const queryDictItem = async (param: { dict_code?: string }, pagination: P
  * @param param 参数
  * @return Promise<Result>
  */
-export const createDictItem = (param: { dict_code: string, dict_item_code: string, dict_item_name: string, number: number, edit_enable: string, comment: string }) => {
+export const createDictItem = async (param: { dict_code: string, dict_item_code: string, dict_item_name: string, number: number, edit_enable: string, comment: string }) => {
   const collection = db.collection('uni-dict-item')
   const res = collection.add(param)
   return handleResult(res)
+
+  // 以下代码是做云开发数据库压力测试用的。阿里云最多支持500条数据的查询，2000条数据的插入，update和remove无限制，数据量大时响应速度挺好，高并发待测试。腾讯云待测试
+
+  // const collection = db.collection('uni-dict-item')
+  // const list = []
+  // for (let i = 0; i < 2000; i++) {
+  //   const p = JSON.parse(JSON.stringify(param))
+  //   const random = Math.random() + ''
+  //   p.dict_item_code = random
+  //   p.dict_item_name = random
+  //   list.push(p)
+  // }
+  // const res = collection.add(list)
+  // const result = await handleResult(res)
+  // console.log(result)
+  // return result
 }
 
 /**
