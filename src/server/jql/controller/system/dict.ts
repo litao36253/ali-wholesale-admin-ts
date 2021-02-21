@@ -64,7 +64,7 @@ export const updateDict = (param: { _id: string, code: string, name: string, typ
 }
 
 /**
- * 修改数据字典
+ * 删除数据字典（软删除）
  * @param param 参数
  * @return Promise<Result>
  */
@@ -82,15 +82,16 @@ export const deleteDict = (_id: string) => {
  * @param pagination 分页参数
  * @return Promise<Result>
  */
-export const queryDictItem = async (param: { dictCode?: string }, pagination: Pagination) => {
+export const queryDictItem = async (param: { dict_code?: string }, pagination: Pagination) => {
   const collection = db.collection('uni-dict-item,uni-id-users')
   const query = {
-    dict_code: new RegExp(param.dictCode, 'i'),
+    dict_code: new RegExp(param.dict_code, 'i'),
     is_delete: false
   }
   const res = collection.where(query)
-    .field('dict_item_code, dict_item_name, edit_enable, comment, last_reviser{username}, update_time')
+    .field('dict_item_code, dict_item_name, number, edit_enable, comment, last_reviser{username}, update_time')
     .orderBy('update_time', 'desc')
+    .orderBy('number', 'asc')
     .skip(pagination.pageSize * (pagination.currentPage - 1))
     .limit(pagination.pageSize)
     .get()
@@ -107,4 +108,43 @@ export const queryDictItem = async (param: { dictCode?: string }, pagination: Pa
   })
 
   return result
+}
+
+/**
+ * 新增数据字典项
+ * @param param 参数
+ * @return Promise<Result>
+ */
+export const createDictItem = (param: { dict_code: string, dict_item_code: string, dict_item_name: string, number: number, edit_enable: string, comment: string }) => {
+  const collection = db.collection('uni-dict-item')
+  const res = collection.add(param)
+  return handleResult(res)
+}
+
+/**
+ * 修改数据字典项
+ * @param param 参数
+ * @return Promise<Result>
+ */
+export const updateDictItem = (param: { _id: string, dict_item_code: string, dict_item_name: string, number: number, edit_enable: string, comment: string }) => {
+  const collection = db.collection('uni-dict-item')
+  const res = collection.doc(param._id).update({
+    ...param,
+    _id: undefined
+  })
+  return handleResult(res)
+}
+
+/**
+ * 删除数据字典项（软删除）
+ * @param param 参数
+ * @return Promise<Result>
+ */
+export const deleteDictItem = (_id: string) => {
+  const collection = db.collection('uni-dict-item')
+  // const res = collection.doc(_id).update({
+  //   is_delete: true
+  // })
+  const res = collection.doc(_id).remove()
+  return handleResult(res)
 }

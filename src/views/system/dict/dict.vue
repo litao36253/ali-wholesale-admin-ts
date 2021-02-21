@@ -15,15 +15,15 @@
       <njs-datagrid-column prop="code" label="字典编号" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="name" label="字典名称" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="type" label="字典分类" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'1': 'success', '2': 'warning', '3': 'danger'}"></njs-datagrid-column>
+      <njs-datagrid-column prop="edit_enable" label="维护标识" show-overflow-tooltip sortable min-width="120" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
       <njs-datagrid-column prop="last_reviser_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="update_time" label="最后修改时间" type="time" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
       <njs-datagrid-column label="操作" min-width="180" fixed="right">
         <template v-slot="{ row }">
           <el-button type="text" @click.stop="handlerShowDetails(row)">管理字典项</el-button>
-          <el-button type="text" :disabled="row.edit_enable === '3'" @click.stop="handleUpdate(row)">修改</el-button>
-          <el-button type="text" :disabled="row.edit_enable === '2' || row.edit_enable === '3'" @click.stop="handleDelete(row)">删除</el-button>
+          <el-button type="text" :disabled="row.edit_enable === 'notMaintainable'" @click.stop="handleUpdate(row)">修改</el-button>
+          <el-button type="text" :disabled="row.edit_enable === 'editable' || row.edit_enable === 'notMaintainable'" @click.stop="handleDelete(row)">删除</el-button>
         </template>
       </njs-datagrid-column>
 
@@ -43,8 +43,8 @@
       </template>
 
       <template v-slot:drawer>
-        <njs-datagrid-drawer :visible.sync="drawerVisible" :width="920" hideTitle>
-          <DictItemManage :dictCode="currentRow.code || ''"/>
+        <njs-datagrid-drawer :visible.sync="drawerVisible" width="70%" hideTitle>
+          <DictItemManage :dictCode="currentRow.code || ''" :dictName="currentRow.name || ''"/>
         </njs-datagrid-drawer>
       </template>
     </njs-datagrid>
@@ -72,8 +72,8 @@
           <el-col :span="12">
             <el-form-item label="维护标识" prop="edit_enable" :rules="[{ required: true, message: '请选择维护标识' }]">
               <!-- <el-input v-model="editFormModel.edit_enable" placeholder="请选择维护标识"></el-input> -->
-              <el-radio-group v-model="editFormModel.edit_enable" dict="test">
-                <el-radio label="1">可维护</el-radio>
+              <el-radio-group v-model="editFormModel.edit_enable" dict="edit_enable">
+                <el-radio label="maintainable">可维护</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -129,7 +129,7 @@ export default class Dict extends Vue {
     code: '',
     name: '',
     type: '',
-    edit_enable: '',
+    edit_enable: 'maintainable',
     comment: ''
   }
 

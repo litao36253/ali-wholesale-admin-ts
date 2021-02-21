@@ -4,7 +4,7 @@
       <template v-if="type === 'state'">
         <el-tag :type="stateMap[row[prop]]" size="medium">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
       </template>
-      <template v-else-if="type === 'time'">{{ moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') }}</template>
+      <template v-else-if="type === 'time'">{{ row[prop] ? moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') : row[prop] }}</template>
       <template v-else-if="type === 'color'">
         <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
       </template>

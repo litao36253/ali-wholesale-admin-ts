@@ -44,13 +44,13 @@
 			"defaultValue": "1",
 			"enum": [{
 				"text": "可维护",
-				"value": "1"
+				"value": "maintainable"
 			}, {
 				"text": "可改不可删",
-				"value": "2"
+				"value": "editable"
 			}, {
 				"text": "不可维护",
-				"value": "3"
+				"value": "notMaintainable"
 			}]
 		},
 		"comment": {

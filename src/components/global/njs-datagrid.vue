@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Ref, Provide, Vue } from 'vue-property-decorator'
+import { Component, Prop, Ref, Provide, Watch, Vue } from 'vue-property-decorator'
 import { Form, Table } from 'element-ui'
 
 @Component({
@@ -266,7 +266,6 @@ export default class NjsDatagrid extends Vue {
   protected realDuration = 0
 
   protected created () {
-    Object.assign(this.formData, this.defaultQuery)
     this.pageSize = this.pageSizes[0]
     this.realDuration = this.duration
     if (this.data) {
@@ -702,6 +701,14 @@ export default class NjsDatagrid extends Vue {
     } else if (openState === false) {
       this.moreQueryDrop.visible = false
     }
+  }
+
+  @Watch('defaultQuery', {
+    deep: true,
+    immediate: true
+  })
+  protected handleDefaultQueryChange () {
+    Object.assign(this.formData, this.defaultQuery)
   }
 }
 </script>
