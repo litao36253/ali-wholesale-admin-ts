@@ -14,7 +14,7 @@
     >
       <njs-datagrid-column prop="code" label="字典编号" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="name" label="字典名称" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
-      <njs-datagrid-column prop="type" label="字典分类" dict="dict_type" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
+      <njs-datagrid-column prop="type" label="字典类型" dict="dict_type" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
       <njs-datagrid-column prop="edit_enable" label="维护标识" dict="edit_enable" sortable min-width="120" type="state" :state-map="{'maintainable': 'success', 'editable': 'warning', 'notMaintainable': 'danger'}"></njs-datagrid-column>
       <njs-datagrid-column prop="comment" label="备注" show-overflow-tooltip sortable min-width="160"></njs-datagrid-column>
       <njs-datagrid-column prop="last_reviser_username" label="最后修改人" show-overflow-tooltip sortable min-width="120"></njs-datagrid-column>
@@ -28,18 +28,13 @@
       </njs-datagrid-column>
 
       <template v-slot:query="{ formData }">
-        <el-form-item prop="code" label="字典编号">
-          <el-input v-model="formData.code" placeholder="请输入字典编号"></el-input>
-        </el-form-item>
-        <el-form-item prop="name" label="字典名称">
-          <el-input v-model="formData.name" placeholder="请输入字典名称"></el-input>
-        </el-form-item>
         <el-form-item prop="type" label="字典类型">
           <el-select v-model="formData.type" dict="dict_type" placeholder="请选择字典类型" @change="datagrid.refresh"></el-select>
         </el-form-item>
-        <el-form-item prop="code">
-          <el-button type="primary" size="small" @click="datagrid.refresh">查询</el-button>
-        </el-form-item>
+        <njs-datagrid-search :value="formData" :fields="[
+          {value: 'code', label: '字典编号', placeholder: '请输入字典编号'},
+          {value: 'name', label: '字典名称', placeholder: '请输入字典名称'}
+        ]" defaultFieldName="code"></njs-datagrid-search>
       </template>
 
       <template v-slot:drawer>
@@ -97,10 +92,11 @@ import { Component, Ref, Vue } from 'vue-property-decorator'
 import { Form } from 'element-ui'
 import Datagrid from '@/components/global/njs-datagrid.vue'
 import DictItemManage from './dict-item-manage.vue'
+import NjsDatagridSearch from '@/components/global/njs-datagrid-search.vue'
 
 @Component({
   name: 'system.dict',
-  components: { DictItemManage }
+  components: { DictItemManage, NjsDatagridSearch }
 })
 export default class Dict extends Vue {
   @Ref('editForm')

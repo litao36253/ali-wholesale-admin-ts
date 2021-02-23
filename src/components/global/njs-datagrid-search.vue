@@ -1,9 +1,15 @@
 <template>
-  <el-form-item :prop="queryText">
-    el-input.input-with-select(v-model='QUERY_TEXT' clearable @keydown.native.13="datagridRefresh" :placeholder="realPlaceholder")
-      el-select(v-model='QUERY_TYPE', @change="queryTypeChange" slot='prepend', placeholder="请选择" v-if="!hideSelect")
-        el-option(v-for="(item,index) in selectItems" :key="index" :label="item.label", :value="item.value")
-      el-button(slot='append' icon='el-icon-search' @click="datagridRefresh")
+  <el-form-item :prop="fieldName">
+    <el-input v-model="queryText" :placeholder="realPlaceholder" clearable @keydown.native.13="datagridRefresh" @clear="datagridRefresh">
+      <template v-slot:prepend>
+        <el-select v-if="!hideSelect" v-model="fieldName" placeholder="请选择" :clearable="false" :style="{ width: realSelectWidth }" @change="queryTypeChange">
+          <el-option v-for="item in fields" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        </el-select>
+      </template>
+      <template v-slot:append>
+        <el-button icon='el-icon-search' @click="datagridRefresh"></el-button>
+      </template>
+    </el-input>
   </el-form-item>
 </template>
 
@@ -15,12 +21,13 @@ export default {
       type: Object,
       required: true
     },
-    selectItems: { // 下拉选项
+    fields: { // 下拉选项(可选字段名列表)
       type: Array,
       default () {
         return []
       }
     },
+    defaultFieldName: String, // 默认的查询字段
     hideSelect: {
       type: Boolean,
       default: false
@@ -29,20 +36,15 @@ export default {
       type: String,
       default: ''
     },
-    queryText: {
-      type: String,
-      default: 'QUERY_TEXT'
-    }
-  },
-  created () {
-    if (!this.value.QUERY_TYPE && !this.hideSelect) {
-      console.error(this.$t('使用 njs-datagrid-search 组件时，若 hideSelect 属性不为 true，则其父级 njs-datagrid 组件必须通过 default-query 属性来设置默认的 QUERY_TYPE 作为查询条件！'))
+    selectWidth: { // 内嵌下拉框的宽度
+      type: [String, Number],
+      default: '100px'
     }
   },
   data () {
     return {
       datagrid: null, // 父级 datagrid 组件
-      first: true // 标记是否为第一次value[queryText]的值为空字符串
+      fieldName: this.defaultFieldName || '' // 要查询的字段名
     }
   },
   methods: {
@@ -60,60 +62,53 @@ export default {
     }
   },
   computed: {
-    QUERY_TEXT: {
+    queryText: {
       get () {
-        return this.value[this.queryText]
+        return this.value[this.fieldName]
       },
       set (val) {
-        this.$set(this.value, this.queryText, val)
-        this.$emit('input', this.value)
-      }
-    },
-    QUERY_TYPE: {
-      get () {
-        return this.value.QUERY_TYPE
-      },
-      set (val) {
-        this.$set(this.value, 'QUERY_TYPE', val)
+        this.$set(this.value, this.fieldName, val)
         this.$emit('input', this.value)
       }
     },
     realPlaceholder () {
-      if (this.placeholder) {
+      const placeholderItem = this.fields.find(item => item.value === this.fieldName)
+      if (placeholderItem) {
+        return placeholderItem.placeholder
+      } else {
         return this.placeholder
       }
-      let placeholderitem
-      this.selectItems.forEach((item) => {
-        if (item.value === this.QUERY_TYPE) {
-          placeholderitem = item
-        }
-      })
-      if (placeholderitem) {
-        return placeholderitem.placeholder
+    },
+    realSelectWidth () {
+      if (typeof this.selectWidth === 'number') {
+        return this.selectWidth + 'px'
       } else {
-        return this.$t('请输入内容')
+        return this.selectWidth
       }
     }
   },
   mounted () {
     try {
       if (this.$parent.$el.className.indexOf('njs-datagrid-more-used-query') > -1) {
-        this.datagrid = this.$parent.$parent.$parent
+        this.datagrid = this.$parent.$parent
       } else {
         console.error(this.$t('njs-datagrid-search 组件必须嵌套在 datagrid 组件的 query 插槽中使用！'))
       }
     } catch (e) {
       console.error(this.$t('njs-datagrid-search 组件必须嵌套在 datagrid 组件的 query 插槽中使用！'))
     }
+  },
+  watch: {
+    fieldName (val, oldVal) {
+      const oldText = this.value[oldVal]
+      this.fields.forEach(item => {
+        if (item.value !== val) {
+          this.$set(this.value, item.value, undefined)
+        } else {
+          this.$set(this.value, item.value, oldText)
+        }
+      })
+    }
   }
-  // watch: {
-  //   QUERY_TEXT (val) {
-  //     if (val === '' && !this.first) {
-  //       this.datagridRefresh()
-  //     } else {
-  //       this.first = false
-  //     }
-  //   }
-  // }
 }
 </script>
