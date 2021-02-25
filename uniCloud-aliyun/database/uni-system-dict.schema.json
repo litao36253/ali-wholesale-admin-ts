@@ -3,7 +3,7 @@
 	"bsonType": "object",
 	"required": ["code", "name", "edit_enable", "type"],
 	"permission": {
-		"read": "doc.is_delete==false",
+		"read": true,
 		"create": false,
 		"update": false,
 		"delete": false
@@ -52,23 +52,44 @@
 			"description": "备注",
 			"trim": "both"
 		},
-		"is_delete": {
-			"bsonType": "bool",
-			"description": "是否已删除",
-			"defaultValue": false
+		"enable_status": {
+			"bsonType": "string",
+			"description": "启用状态",
+      "defaultValue": "enable",
+			"enum": {
+			  "collection": "uni-dict-item", // 表名
+			  "field": "dict_item_name as text, dict_item_code as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
+			  "where": "dict_code == 'enable_status'", // 查询条件
+			  "orderby": "number, asc" // 排序字段及正序倒叙设置
+			}
 		},
+    "creator": {
+    	"bsonType": "string",
+    	"description": "创建人",
+    	"foreignKey": "uni-id-users._id",
+      "forceDefaultValue": {
+        "$env": "uid"
+      }
+    },
+    "create_time": {
+    	"bsonType": "timestamp",
+    	"description": "创建时间",
+      "forceDefaultValue": {
+        "$env": "now"
+      }
+    },
 		"last_reviser": {
 			"bsonType": "string",
 			"description": "最后修改人",
 			"foreignKey": "uni-id-users._id",
-      "forceDefaultValue": {
+      "defaultValue": {
         "$env": "uid"
       }
 		},
 		"update_time": {
 			"bsonType": "timestamp",
 			"description": "最后修改时间",
-      "forceDefaultValue": {
+      "defaultValue": {
         "$env": "now"
       }
 		}

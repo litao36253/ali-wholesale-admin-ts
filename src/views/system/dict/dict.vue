@@ -140,6 +140,7 @@ export default class Dict extends Vue {
   }
 
   protected mounted () {
+    console.log(this.$router)
   }
 
   protected async handleSubmitDict () {

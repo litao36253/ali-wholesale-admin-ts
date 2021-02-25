@@ -26,7 +26,7 @@
       </njs-datagrid-column>
     </njs-datagrid>
 
-    <el-dialog :visible.sync="editDialogVisible" width="800px" :close-on-click-modal="false" :title="editDialogType === 'create' ? '新增数据字典项' : '修改数据字典项'" @close="handleDialogClose">
+    <el-dialog :visible.sync="editDialogVisible" width="830px" :close-on-click-modal="false" :title="editDialogType === 'create' ? '新增数据字典项' : '修改数据字典项'" @close="handleDialogClose">
       <el-form ref="editForm" :model="editFormModel" label-width="96px">
         <el-row :gutter="20">
           <el-col :span="12">
