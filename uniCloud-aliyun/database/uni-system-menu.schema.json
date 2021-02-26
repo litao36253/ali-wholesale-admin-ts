@@ -1,7 +1,7 @@
 // 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
-	"required": ["code", "name", "edit_enable", "type"],
+	"required": ["path", "pattent_path", "titile"],
 	"permission": {
 		"read": true,
 		"create": false,
@@ -12,29 +12,29 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"code": {
+		"path": {
 			"bsonType": "string",
-			"title": "字典代码",
-			"description": "字典代码，不允许重复",
+			"description": "菜单路径",
 			"trim": "both"
 		},
-		"name": {
+		"parrent_path": {
 			"bsonType": "string",
-			"title": "字典名称",
-			"description": "字典名称，不允许重复",
+			"title": "父菜单路径",
+			"description": "父菜单路径",
 			"trim": "both"
 		},
-		"type": {
+		"title": {
 			"bsonType": "string",
-			"title": "字典分类",
-			"description": "给字典区分类别，方便后期管理",
-			"enum": {
-        "collection": "uni-system-dict-item", // 表名
-        "field": "dict_item_name as text, dict_item_code as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
-        "where": "dict_code == 'dict_type'", // 查询条件
-        "orderby": "number, asc" // 排序字段及正序倒叙设置
-      }
+			"title": "菜单标题",
+			"description": "菜单标题",
+			"trim": "both"
 		},
+    "icon": {
+    	"bsonType": "string",
+    	"title": "菜单图标",
+    	"description": "菜单图标",
+    	"trim": "both"
+    },
 		"edit_enable": {
 			"bsonType": "string",
 			"title": "维护标识",
@@ -46,23 +46,50 @@
 			  "orderby": "number, asc" // 排序字段及正序倒叙设置
 			}
 		},
-		"comment": {
-			"bsonType": "string",
-			"title": "备注",
-			"description": "备注",
-			"trim": "both"
-		},
 		"enable_status": {
 			"bsonType": "string",
 			"description": "启用状态",
       "defaultValue": "enable",
 			"enum": {
 			  "collection": "uni-system-dict-item", // 表名
-			  "field": "dict_item_name as text, dict_item_code as value", //字段筛选，需要 as 成前端组件支持的字段名 text、value。text、value是datacom组件规范的标准
+			  "field": "dict_item_name as text, dict_item_code as value",
 			  "where": "dict_code == 'enable_status'", // 查询条件
 			  "orderby": "number, asc" // 排序字段及正序倒叙设置
 			}
 		},
+    "kepp_alive": {
+    	"bsonType": "string",
+    	"description": "是否缓存路由组件",
+      "defaultValue": "yes",
+    	"enum": {
+    	  "collection": "uni-system-dict-item", // 表名
+    	  "field": "dict_item_name as text, dict_item_code as value",
+    	  "where": "dict_code == 'whether'", // 查询条件
+    	  "orderby": "number, asc" // 排序字段及正序倒叙设置
+    	}
+    },
+    "is_leaf": {
+    	"bsonType": "string",
+    	"description": "是否为叶子节点",
+      "defaultValue": "yes",
+    	"enum": {
+    	  "collection": "uni-system-dict-item", // 表名
+    	  "field": "dict_item_name as text, dict_item_code as value",
+    	  "where": "dict_code == 'whether'", // 查询条件
+    	  "orderby": "number, asc" // 排序字段及正序倒叙设置
+    	}
+    },
+    "open_mode": {
+    	"bsonType": "string",
+    	"description": "菜单打开方式",
+      "defaultValue": "tab",
+    	"enum": {
+    	  "collection": "uni-system-dict-item", // 表名
+    	  "field": "dict_item_name as text, dict_item_code as value",
+    	  "where": "dict_code == 'whether'", // 查询条件
+    	  "orderby": "number, asc" // 排序字段及正序倒叙设置
+    	}
+    },
     "creator": {
     	"bsonType": "string",
     	"description": "创建人",
@@ -82,16 +109,16 @@
 			"bsonType": "string",
 			"description": "最后修改人",
 			"foreignKey": "uni-id-users._id",
-      "defaultValue": {
-        "$env": "uid"
-      }
+		  "defaultValue": {
+		    "$env": "uid"
+		  }
 		},
 		"update_time": {
 			"bsonType": "timestamp",
 			"description": "最后修改时间",
-      "defaultValue": {
-        "$env": "now"
-      }
+		  "defaultValue": {
+		    "$env": "now"
+		  }
 		}
 	}
 }
