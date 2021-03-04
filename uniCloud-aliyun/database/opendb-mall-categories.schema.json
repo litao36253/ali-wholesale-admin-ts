@@ -1,3 +1,7 @@
+/**
+ * 商品分类表
+ */
+
 {
 	"bsonType": "object",
 	"required": ["name"],

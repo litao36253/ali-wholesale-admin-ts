@@ -1,0 +1,49 @@
+/**
+ * 系统操作日志表
+ */
+
+{
+	"bsonType": "object",
+	"required": ["user_id", "content"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "用户id，参考uni-id-users表"
+		},
+		"operation_type": {
+			"bsonType": "string",
+			"description": "操作类型，如：登录、登出、修改密码等",
+      "enum": {
+      	"collection": "system-dict-item",
+      	"field": "dict_item_name as text, dict_item_code as value",
+      	"where": "dict_code == 'operation_type'",
+      	"orderby": "number, asc"
+      }
+		},
+		"ip": {
+			"bsonType": "string",
+			"description": "ip地址",
+			"title": "IP",
+			"forceDefaultValue": {
+				"$env": "clientIP"
+			}
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"title": "时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

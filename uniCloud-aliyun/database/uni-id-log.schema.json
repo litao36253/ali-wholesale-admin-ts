@@ -13,7 +13,7 @@
 			"bsonType": "string",
 			"description": "userAgent"
 		},
-		"device_id": {
+		"device_uuid": {
 			"bsonType": "string",
 			"description": "设备唯一标识(需要加密存储)"
 		},
@@ -21,6 +21,10 @@
 			"bsonType": "string",
 			"enum": ["login", "logout"],
 			"description": "登录类型"
+		},
+		"state": {
+			"bsonType": "int",
+			"description": "结果：0 失败、1 成功"
 		},
 		"ip": {
 			"bsonType": "string",

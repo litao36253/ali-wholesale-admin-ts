@@ -16,7 +16,7 @@
 		"type": {
 			"bsonType": "int",
 			"enum": [1, 2],
-			"description": "积分类型 1:收入 2:指出"
+			"description": "积分类型 1:收入 2:支出"
 		},
 		"balance": {
 			"bsonType": "int",

@@ -13,13 +13,29 @@
 			"bsonType": "string",
 			"description": "userAgent"
 		},
-		"device_id": {
+		"uuid": {
 			"bsonType": "string",
 			"description": "设备唯一标识(需要加密存储)"
 		},
 		"vendor": {
 			"bsonType": "string",
 			"description": "设备厂商"
+		},
+		"push_clientid": {
+			"bsonType": "string",
+			"description": "推送设备客户端标识"
+		},
+		"imei": {
+			"bsonType": "string",
+			"description": "国际移动设备识别码IMEI(International Mobile Equipment Identity)"
+		},
+		"oaid": {
+			"bsonType": "string",
+			"description": "移动智能设备标识公共服务平台提供的匿名设备标识符(OAID)"
+		},
+		"idfa": {
+			"bsonType": "string",
+			"description": "iOS平台配置应用使用广告标识(IDFA)"
 		},
 		"model": {
 			"bsonType": "string",

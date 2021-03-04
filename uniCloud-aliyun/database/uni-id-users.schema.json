@@ -1,3 +1,6 @@
+/**
+ * 用户表
+ */
 {
 	"bsonType": "object",
 	"required": [],
@@ -109,6 +112,17 @@
 			"description": "头像地址",
 			"trim": "both"
 		},
+		"department_id": {
+			"bsonType": "array",
+			"description": "部门ID",
+			"title": "部门",
+			"enumType": "tree",
+			"enum": {
+				"collection": "opendb-department",
+				"orderby": "name asc",
+				"field": "_id as value, name as text"
+			}
+		},
 		"role": {
 			"bsonType": "array",
 			"title": "角色",
@@ -143,6 +157,10 @@
 		"ali_openid": {
 			"bsonType": "string",
 			"description": "支付宝平台openid"
+		},
+		"apple_openid": {
+			"bsonType": "string",
+			"description": "苹果登录openid"
 		},
 		"comment": {
 			"bsonType": "string",

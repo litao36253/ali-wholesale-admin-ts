@@ -1,4 +1,6 @@
-// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+/**
+ * 数据字典表
+ */
 {
 	"bsonType": "object",
 	"required": [
