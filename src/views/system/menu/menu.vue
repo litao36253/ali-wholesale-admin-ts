@@ -434,23 +434,24 @@ export default {
     }
   },
   created () {
-    this.$ajaxRequest([
-      {
-        service: 'P0104404'
-      }
-    ]).then(result => {
-      if (result.code === '0') {
-        result.data.forEach(item => {
-          item.showState = 'show' // 规定该节点的展示状态。 show：展示， add：新增，edit：修改
-          item.editName = item.MENU_NAME // 编辑状态下的菜单名称
-        })
-        this.$set(
-          this.data[0],
-          'children',
-          listTransTree(result.data, 'MENU_ID', 'PAR_MENU')
-        )
-      }
-    })
+    // @todo
+    // this.$ajaxRequest([
+    //   {
+    //     service: 'P0104404'
+    //   }
+    // ]).then(result => {
+    //   if (result.code === '0') {
+    //     result.data.forEach(item => {
+    //       item.showState = 'show' // 规定该节点的展示状态。 show：展示， add：新增，edit：修改
+    //       item.editName = item.MENU_NAME // 编辑状态下的菜单名称
+    //     })
+    //     this.$set(
+    //       this.data[0],
+    //       'children',
+    //       listTransTree(result.data, 'MENU_ID', 'PAR_MENU')
+    //     )
+    //   }
+    // })
   },
   computed: {
     formTitle () {
