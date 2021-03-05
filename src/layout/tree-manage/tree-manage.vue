@@ -1,22 +1,33 @@
 <template>
   <div class="tree-manage-wrap">
     <div class="tree-manage-side">
-      <div class="tree-manage-side-title">系统菜单</div>
+      <div class="tree-manage-side-title">{{ sideTitle }}</div>
       <div class="tree-manage-side-content">
-        
+        <slot name="side-content"></slot>
       </div>
     </div>
-    <div class="form-wrap">
-      <div class="form-title" v-html="formTitle"></div>
-      <div class="form">
-        
+    <div class="tree-manage-body">
+      <div class="tree-manage-body-title">{{ bodyTitle }}</div>
+      <div class="tree-manage-body-content">
+        <slot name="body-content"></slot>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
+@Component({
+  name: 'tree-manage'
+})
+export default class TreeManage extends Vue {
+  @Prop(String)
+  protected sideTitle: string // 侧标题
+
+  @Prop(String)
+  protected bodyTitle: string // 主体标题
+}
 </script>
 
 <style lang="scss" scoped>
@@ -52,13 +63,13 @@
         padding: 20px 12px;
       }
     }
-    .form-wrap {
+    .tree-manage-body {
       height: 100%;
       flex: 1;
       display: flex;
       flex-direction: column;
       padding-left: 60px;
-      .form-title {
+      .tree-manage-body-title {
         height: 46px;
         border-bottom: 1px solid #E8E8E8;
         line-height: 46px;
@@ -67,7 +78,7 @@
         font-weight: bold;
         flex: none;
       }
-      .form {
+      .tree-manage-body-content {
         flex: 1;
         padding-top: 20px;
         width: 500px;
