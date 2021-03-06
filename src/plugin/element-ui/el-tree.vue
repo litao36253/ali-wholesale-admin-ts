@@ -53,8 +53,9 @@
 </template>
 
 <script>
-import { ElTree } from 'element-ui'
+import ElTree from 'element-ui/packages/tree/src/tree'
 import { listTransTree } from '@/utils/utils'
+
 export default {
   name: 'el-tree',
   components: {

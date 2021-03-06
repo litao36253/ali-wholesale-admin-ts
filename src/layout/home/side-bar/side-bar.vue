@@ -2,9 +2,9 @@
   <el-scrollbar class="side-bar-container" :class="{ 'is-collapse': collapse }">
     <!-- <vab-logo /> -->
     <el-menu
-      :background-color="styleVariables['menu-background']"
-      :text-color="styleVariables['menu-color']"
-      :active-text-color="styleVariables['menu-color-active']"
+      background-color="rgb(40, 44, 52)"
+      text-color="#fff"
+      active-text-color="#fff"
       :default-active="activeMenu"
       :collapse="collapse"
       @select="handleSelect"
@@ -26,10 +26,8 @@
 </template>
 
 <script>
-// import styleVariables from '@/uni.scss'
 import SubMenu from './components/sub-menu.vue'
 import MenuItem from './components/menu-item.vue'
-const styleVariables = {}
 
 export default {
   name: 'side-bar',
@@ -50,9 +48,6 @@ export default {
         return '/'
       }
       return path
-    },
-    styleVariables () {
-      return styleVariables
     }
   },
   methods: {
@@ -85,7 +80,7 @@ export default {
   @mixin active {
     &:hover {
       color: $--color-white;
-      background-color: mix(transparent, $--color-primary, 40%) !important;
+      background-color: mix($--color-white, $--color-primary, 30%) !important;
     }
 
     &.is-active {
@@ -130,12 +125,16 @@ export default {
 
       .el-menu-item,
       .el-submenu__title {
-        height: 50px;
+        @include active;
         overflow: hidden;
-        line-height: 50px;
+        line-height: 52px;
         text-overflow: ellipsis;
         white-space: nowrap;
-        vertical-align: middle;
+        vertical-align: sub;
+        height: auto;
+        i {
+          color: $--color-white;
+        }
       }
 
       .el-menu-item {

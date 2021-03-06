@@ -4,7 +4,7 @@ export default {
   component: () => import('@/layout/home/home.vue'),
   meta: {
     title: '首页',
-    icon: 'el-icon-sell'
+    icon: 'el-icon-s-home'
   },
   children: [
     {
