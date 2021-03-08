@@ -25,6 +25,16 @@ export default {
         keepAlive: true // 缓存路由组件
       },
       component: () => import('@/views/system/dict/dict.vue')
+    },
+    {
+      path: '/system/source',
+      name: 'system.source',
+      meta: {
+        title: '素材管理',
+        // icon: 'el-icon-s-tools',
+        keepAlive: true // 缓存路由组件
+      },
+      component: () => import('@/views/system/source/source.vue')
     }
   ]
 }
