@@ -1,0 +1,74 @@
+// 素材表
+
+{
+	"bsonType": "object",
+	"required": ["name", "file_type", "url"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+    "name": {
+      "bsonType":"string",
+      "description":"附件展示的名称"
+    },
+    "categories": {
+      "bsonType":"array",
+      "description":"附件的类别、祖先类别集合",
+      "defaultValue":[]
+    },
+    "file_type": {
+      "bsonType":"string",
+      "description":"文件类型",
+      "enum": {
+        "collection":"system-dict-item",
+        "field":"dict_item_code as value, dict_item_name as text",
+        "where":"dict_code == 'file_type'",
+        "orderby":"number, asc"
+      }
+    },
+    "url": {
+      "arrayType":"string",
+      "description":"文件路径"
+    },
+    "number": {
+      "bsonType":"int",
+      "description":"序号，用于排序,数值越小排序越前"
+    },
+    "creator": {
+    	"bsonType": "string",
+    	"description": "创建人",
+    	"foreignKey": "uni-id-users._id",
+    	"forceDefaultValue": {
+    		"$env": "uid"
+    	}
+    },
+    "create_time": {
+    	"bsonType": "timestamp",
+    	"description": "创建时间",
+    	"forceDefaultValue": {
+    		"$env": "now"
+    	}
+    },
+    "last_reviser": {
+    	"bsonType": "string",
+    	"description": "最后修改人",
+    	"foreignKey": "uni-id-users._id",
+    	"defaultValue": {
+    		"$env": "uid"
+    	}
+    },
+    "update_time": {
+    	"bsonType": "timestamp",
+    	"description": "最后修改时间",
+    	"defaultValue": {
+    		"$env": "now"
+    	}
+    }
+	}
+}

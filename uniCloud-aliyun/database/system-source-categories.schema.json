@@ -1,0 +1,61 @@
+// 素材分类表
+
+{
+	"bsonType": "object",
+	"required": ["parent_ids", "name"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+    "parent_ids": {
+      "bsonType": "array",
+      "description": "祖先ID集合",
+      "defaultValue":[]
+    },
+    "name": {
+      "bsonType":"string",
+      "description":"分类名称",
+      "trim":"both"
+    },
+    "number": {
+      "bsonType":"int",
+      "description":"序号，用于排序,数值越小排序越前"
+    },
+		"creator": {
+			"bsonType": "string",
+			"description": "创建人",
+			"foreignKey": "uni-id-users._id",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"last_reviser": {
+			"bsonType": "string",
+			"description": "最后修改人",
+			"foreignKey": "uni-id-users._id",
+			"defaultValue": {
+				"$env": "uid"
+			}
+		},
+		"update_time": {
+			"bsonType": "timestamp",
+			"description": "最后修改时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}
