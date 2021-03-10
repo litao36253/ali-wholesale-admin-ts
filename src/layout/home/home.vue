@@ -4,7 +4,7 @@
       <SideBar></SideBar>
     </el-aside>
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>Header<el-button type="danger" @click="logout">退出登录</el-button></el-header>
       <el-main>
         <keep-alive :include="$store.state.common.keepAliveRoutes">
           <router-view></router-view>

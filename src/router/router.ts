@@ -28,7 +28,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
   const authCheck = !to.matched.some(item => item.meta?.authCheck === false) // 当前要进入的路由是否需要校验权限
   if (authCheck) {
@@ -39,22 +39,19 @@ router.beforeEach((to, from, next) => {
     } else {
       const token = uni.getStorageSync('uni_id_token')
       if (token) {
-        baseServer(baseApi.apiCheckToken).then(async (res) => {
-          if (res.code) {
-            next({
-              path: '/user/login',
-              query: {
-                redirect: to.fullPath
-              }
-            })
-            return
-          }
-          store.commit('common/changeUserInfo', res.userInfo)
-
+        const tokenResult = await baseServer(baseApi.apiCheckToken)
+        if (tokenResult.code) {
+          next({
+            path: '/user/login',
+            query: {
+              redirect: to.fullPath
+            }
+          })
+        } else {
+          store.commit('common/changeUserInfo', tokenResult.userInfo)
           await store.dispatch('common/queryAllDict')
-
           next()
-        })
+        }
       } else {
         next({
           path: '/user/login',

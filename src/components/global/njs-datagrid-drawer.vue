@@ -11,7 +11,7 @@
       </div>
       <div class="ni-card-footer">
         <slot name="footer"></slot>
-        <el-button size="medium" @click="$emit('update:visible', false)" v-if="showClose">{{ closeText }}</el-button>
+        <el-button type="danger" size="medium" @click="$emit('update:visible', false)" v-if="showClose">{{ closeText }}</el-button>
       </div>
     </div>
   </transition>

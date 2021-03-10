@@ -45,7 +45,6 @@ module.exports = class uniIDController extends Controller {
 
   // 登出
   async logout () {
-    console.log('this.ctx.event.uniIdToken', this.ctx.event.uniIdToken)
     return await uniID.logout(this.ctx.event.uniIdToken)
   }
 }
