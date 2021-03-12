@@ -82,7 +82,10 @@ export default {
       type: String,
       required: true
     },
-    pid: String,
+    parentId: {
+      type: String,
+      default: 'parentId'
+    },
     label: String, // 指定展示的字段名
     separator: { // 多字段作为label时的分隔符
       type: String,
@@ -361,12 +364,7 @@ export default {
       if (this.realDataType === 'children') {
         return this.data
       } else {
-        if (this.pid) {
-          return listTransTree(this.service ? this.resultData : this.data, this.nodeKey, this.pid, this.props.children)
-        } else {
-          console.error('dataType 为 list 或 配置了接口号时，必须指定 pid！')
-          return []
-        }
+        return listTransTree(this.service ? this.resultData : this.data, this.nodeKey, this.parentId, this.props.children)
       }
     }
   },

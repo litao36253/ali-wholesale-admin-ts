@@ -28,7 +28,13 @@ export default async (res: Promise<any>, countRes?: Promise<any>): Promise<Resul
     }
     return response
   }).catch(e => {
-    Message.error('服务器出错了，请稍候再试！')
+    switch (e.code) {
+      case 'TOKEN_INVALID_TOKEN_EXPIRED':
+        Message.error('当前会话已过期，请重新登录！')
+        break
+      default:
+        Message.error('服务器出错了，请稍候再试！')
+    }
     console.error(e)
     return { code: -9999, error: e }
   })

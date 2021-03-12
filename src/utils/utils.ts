@@ -18,13 +18,13 @@ export function getDict (dictCode: string, dictItemCode?: string) {
 /**
  * listTransTree  list转树方法,传入 list 数组指定节点 id 的字段和父节点 pid 的字段名
  * @author 李涛
- * @parma list [{Object},{Object}...] 传入 list 数组
+ * @parma list Object[] 传入 list 数组
  * @parma id String 指定节点 ID 的字段名
- * @parma pid String 指定父节点 ID 的字段名
+ * @parma parentId String 指定父节点 ID 的字段名
  * @parma children String 指定每个节点的子节点集合的名称，不指定则为 “children”
  * @return [tree] 返回树形结构的数据
  */
-export const listTransTree = (list, id = '_id', parentId = 'parent_id', children = 'children') => {
+export const listTransTree = (list, id = '_id', parentId = 'parentId', children = 'children') => {
   const ids = list.map(item => item[id])
   return list.filter(function (parent) {
     const branchArr = list.filter(function (child) {
