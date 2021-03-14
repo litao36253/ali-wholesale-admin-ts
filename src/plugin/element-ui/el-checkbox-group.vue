@@ -122,9 +122,9 @@ export default {
     // 计算出 label 文字
     computedLabel (item, serviceDataLabel) {
       const label = []
-      const lables = serviceDataLabel ? serviceDataLabel.split(',') : []
-      lables.forEach((lableItem) => {
-        label.push(item[lableItem])
+      const labels = serviceDataLabel ? serviceDataLabel.split(',') : []
+      labels.forEach((labelItem) => {
+        label.push(item[labelItem])
       })
       return label.join(this.separator)
     }

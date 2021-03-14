@@ -28,13 +28,13 @@ export const listTransTree = (list, id = '_id', parentId = 'parentId', children 
   const ids = list.map(item => item[id])
   return list.filter(function (parent) {
     const branchArr = list.filter(function (child) {
-      return parent[id] === child[parentId]
+      return parent[id] === getDeepValue(child, parentId)
     })
     // parent[children || 'children'] = []
     if (branchArr.length > 0) {
       parent[children] = branchArr
     }
-    return !ids.includes(parent[parentId]) // 找不到父节点的节点作为一级节点
+    return !ids.includes(getDeepValue(parent, parentId)) // 找不到父节点的节点作为一级节点
   })
 }
 
@@ -55,4 +55,25 @@ export const treeTransList = (tree = [], childKey = 'children') => {
     delete item[childKey]
     return item
   })
+}
+
+/**
+ * getDeepValue  取对象的深层次值
+ * @author 李涛
+ * @parma object Array 传入树形数组
+ * @parma deepKey String 指定节点子节点的字段名
+ * @return any
+ */
+export const getDeepValue = (object: object, deepKey: string) => {
+  const deepKeys = deepKey.split('.')
+  let index = 0
+  let result = object
+  while (result[deepKeys[index]] && index < deepKeys.length) {
+    result = result[deepKeys[index]]
+    index++
+  }
+  if (index === 0 || index < deepKeys.length) {
+    return undefined
+  }
+  return result
 }

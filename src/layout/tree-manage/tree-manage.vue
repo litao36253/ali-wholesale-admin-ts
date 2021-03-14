@@ -53,7 +53,7 @@ export default class TreeManage extends Vue {
         padding-left: 20px;
         line-height: 46px;
         color: #3A3C3E;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: bold;
         flex: none;
       }
@@ -68,20 +68,19 @@ export default class TreeManage extends Vue {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding-left: 26px;
+      padding-left: 20px;
       .tree-manage-body-title {
         height: 46px;
         border-bottom: 1px solid #E8E8E8;
         line-height: 46px;
         color: #3A3C3E;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: bold;
         flex: none;
       }
       .tree-manage-body-content {
         flex: 1;
         padding-top: 20px;
-        width: 500px;
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="njs-tree">
-    <el-input v-if="showSearch" v-model="keyWord" clearable :placeholder="placeholder" @keydown.native.13="$refs.tree.filter(keyWord)" size="medium" class="search-input">
+    <el-input v-if="showSearch" v-model="keyWord" clearable :placeholder="placeholder" @keydown.native.13="$refs.tree.filter(keyWord)" :size="size" class="search-input" >
       <el-button slot='append' icon='el-icon-search' @click="$refs.tree.filter(keyWord)"></el-button>
     </el-input>
     <NativeElTree
@@ -62,9 +62,7 @@ export default {
     NativeElTree: ElTree
   },
   props: {
-    service: { // 接口号
-      type: String
-    },
+    service: Function,
     query: { // 配置了接口号时，可通过此属性配置一些入参
       type: Object,
       default () {
@@ -165,7 +163,8 @@ export default {
       type: Number,
       default: 18
     },
-    iconClass: String
+    iconClass: String,
+    size: String
   },
   data () {
     return {
@@ -182,40 +181,24 @@ export default {
     // 配置了接口号时，请求数据
     refresh () {
       if (this.service) {
-        let submitBeforeCallback
-        let req = [{
-          service: this.service,
-          ...this.query
-        }]
-        this.$emit('before-load', JSON.parse(JSON.stringify(req)), (val) => {
-          submitBeforeCallback = val
-        })
-        if (submitBeforeCallback === false) {
-          return
-        }
-        if (submitBeforeCallback !== undefined) {
-          req = submitBeforeCallback
-        }
         this.loading = true
-        this.$ajaxRequest(req).then((result) => {
-          if (result.code === '0') {
-            this.resultText = ''
-            let callbackData
-            this.$emit('load-success', JSON.parse(JSON.stringify(result.data)), (val) => {
-              callbackData = val
-            })
-            if (callbackData === undefined || callbackData === false) {
-              this.resultData = result.data
-            } else {
-              this.resultData = callbackData
-            }
-          } else {
+        this.service({
+          ...this.query
+        }, {
+          pageSize: 500,
+          currentPage: 1
+        }).then((result) => {
+          this.loading = false
+          if (result.code) {
             this.resultText = '加载失败'
+            this.$emit('load-error', result)
+          } else {
+            this.resultText = ''
+            this.resultData = result.data
           }
-          this.loading = false
         }).catch((err) => {
-          this.resultText = '加载失败'
           this.loading = false
+          this.resultText = '加载失败'
           this.$emit('load-error', err)
           console.error(err)
         })
@@ -284,7 +267,7 @@ export default {
       this.$refs.tree.setCurrentKey(key)
     },
     setCurrentNode (node) {
-      this.$refs.tree.setCurrentNode(node)
+      return this.$refs.tree.setCurrentNode(node)
     },
     getNode (data) {
       return this.$refs.tree.getNode(data)
@@ -364,7 +347,7 @@ export default {
       if (this.realDataType === 'children') {
         return this.data
       } else {
-        return listTransTree(this.service ? this.resultData : this.data, this.nodeKey, this.parentId, this.props.children)
+        return listTransTree(this.service ? this.resultData.concat(this.data) : this.data, this.nodeKey, this.parentId, this.props.children)
       }
     }
   },
@@ -380,6 +363,6 @@ export default {
 
 <style lang="scss" scoped>
   .search-input {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 </style>

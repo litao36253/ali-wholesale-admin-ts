@@ -147,7 +147,7 @@ export default {
       this.service({
         ...this.query
       }, {
-        pageSize: 200,
+        pageSize: 500,
         currentPage: 1
       }).then((result) => {
         if (result.code) {

@@ -10,6 +10,7 @@
     check-on-click-node
     highlight-current
     search-field="name"
+    @current-change="handleCurrentChange"
   >
     <template v-slot="{ node, data }">
       <div v-if="data.state === 'normal'" @mouseenter="hoverNodeId = data._id" @mouseleave="hoverNodeId = ''" class="tree-node">
@@ -27,13 +28,13 @@
         </div>
       </div>
       <div v-else class="tree-node">
-        <el-input v-model="data.editName" placeholder="请输入分类名称"></el-input>
+        <el-input v-model="data.editName" size="mini" placeholder="请输入分类名称" @click.native.stop></el-input>
         <div class="button-wrap">
           <el-tooltip content="提交" placement="top">
-            <el-link type="primary" :underline="false" icon="el-icon-check" @click="submitNode(data)"></el-link>
+            <el-link type="primary" :underline="false" icon="el-icon-check" @click.stop="submitNode(data)"></el-link>
           </el-tooltip>
           <el-tooltip content="取消" placement="top">
-            <el-link type="primary" :underline="false" icon="el-icon-close" @click="cancelEdit(node, data)"></el-link>
+            <el-link type="primary" :underline="false" icon="el-icon-close" @click.stop="cancelEdit(node, data)"></el-link>
           </el-tooltip>
         </div>
       </div>
@@ -42,7 +43,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Tree } from 'element-ui'
 import { listTransTree } from '@/utils/utils'
 
 export type CategoriesNodeDate = {
@@ -59,6 +61,9 @@ export type CategoriesNodeDate = {
   name: 'source-categories'
 })
 export default class SourceCategories extends Vue {
+  @Ref('tree')
+  protected tree: Tree
+
   protected categoriesNodeDate: CategoriesNodeDate[] = [{
     _id: '0',
     parentId: '',
@@ -73,7 +78,11 @@ export default class SourceCategories extends Vue {
 
   protected loading = false
 
-  protected async created () {
+  protected created () {
+    this.querySourceCategories()
+  }
+
+  protected async querySourceCategories () {
     this.loading = true
     const sourceCategoriesResult = await this.$jql.system.source.querySourceCategories().finally(() => {
       this.loading = false
@@ -91,9 +100,11 @@ export default class SourceCategories extends Vue {
       children: []
     }))
     this.categoriesNodeDate[0].children = listTransTree(categoriesNodes)
+    this.tree.setCurrentKey('0')
+    this.$emit('current-change', this.categoriesNodeDate[0])
   }
 
-  protected appendNode (node, data: CategoriesNodeDate) {
+  protected appendNode (data: CategoriesNodeDate) {
     data.children.push({
       _id: new Date().getTime().toString(),
       name: '',
@@ -155,7 +166,26 @@ export default class SourceCategories extends Vue {
   }
 
   protected deleteNode (node, data: CategoriesNodeDate) {
-    console.log(node, data)
+    this.$confirm('你确定要删除该分类及其所有子分类和相关素材吗？', '提示').then(async () => {
+      this.$emit('delete-before')
+      const res = await this.$jql.system.source.deleteSourceCategories(data._id)
+      if (res.code) {
+        this.$emit('delete-after', false)
+      } else {
+        this.$emit('delete-after', true)
+        this.querySourceCategories()
+      }
+    }).catch(e => {
+      if (e === 'cancel') {
+        this.$message.info('取消删除')
+      } else {
+        throw e
+      }
+    })
+  }
+
+  protected handleCurrentChange (data) {
+    this.$emit('current-change', data)
   }
 }
 </script>
@@ -170,7 +200,7 @@ export default class SourceCategories extends Vue {
     display: flex;
     height: 30px;
     line-height: 30px;
-    font-size: 16px;
+    font-size: 14px;
     overflow: hidden;
     .node-name {
       width: calc(100% - 90px);
