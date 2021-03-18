@@ -113,7 +113,7 @@
           class="njs-datagrid-page-size"><span>每页</span>
           <el-select v-model="pageSize" size="mini" :style="{display: 'inline-block', width: '68px'}"
             :clearable="false" @change="handlePageSizeChange">
-            <el-option v-for="item in pageSizes" :key="item" :lable="item" :value="item"></el-option>
+            <el-option v-for="item in pageSizes" :key="item" :label="item" :value="item"></el-option>
           </el-select><span>条</span>
         </span></div>
       <div class="njs-datagrid-select-num" v-if="reserveSelection && (singleSelect || multiple)">

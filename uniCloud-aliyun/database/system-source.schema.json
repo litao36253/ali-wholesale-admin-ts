@@ -13,7 +13,7 @@
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-    "name": {
+    "file_name": {
       "bsonType":"string",
       "description":"附件展示的名称"
     },
@@ -33,12 +33,8 @@
       }
     },
     "url": {
-      "arrayType":"string",
+      "bsonType":"string",
       "description":"文件路径"
-    },
-    "number": {
-      "bsonType":"int",
-      "description":"序号，用于排序,数值越小排序越前"
     },
     "creator": {
     	"bsonType": "string",
