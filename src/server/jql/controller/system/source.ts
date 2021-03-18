@@ -100,6 +100,7 @@ export const querySource = async (param: { file_name: string, file_type: string,
   const res = collection.where(query)
     .skip(pagination.pageSize * (pagination.currentPage - 1))
     .limit(pagination.pageSize)
+    .orderBy('create_time', 'desc')
     .get()
 
   const countRes = collection.where(query).count()

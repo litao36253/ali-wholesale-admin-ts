@@ -40,12 +40,14 @@
         </div>
       </div>
       <div v-for="item in data" :key="item._id" class="content-item" :class="{checked: checked.includes(item._id)}" @click="handleChecked(item)">
-        <img :src="item.url" class="item-content"/>
-        <div class="title">
-          <el-tooltip :content="item.file_name" placement="top">
-            <span>{{ item.file_name }}</span>
-          </el-tooltip>
-        </div>
+        <el-tooltip :content="item.file_name" placement="top">
+          <div>
+            <img v-if="item.file_type === 'picture'" :src="item.url" class="item-content"/>
+            <!-- <video v-else-if="item.file_type === 'video'" :id="item.url" :src="item.url" class="item-content"></video> -->
+            <div v-else-if="item.file_type === 'video'" class="item-content">视频暂不支持预览</div>
+            <div class="title">{{ item.file_name }}</div>
+          </div>
+        </el-tooltip>
       </div>
     </div>
     <div class="content-foot">
@@ -72,7 +74,7 @@ import { CategoriesNodeDate } from './source-categories-tree.vue'
   name: 'source-content'
 })
 export default class SourceContent extends Vue {
-  @Prop({ type: Array, default: () => [10, 20, 30, 50] })
+  @Prop({ type: Array, default: () => [10, 20, 30, 50, 100] })
   protected pageSizes: number[]
 
   @Prop({ type: Object, required: true })
@@ -96,7 +98,7 @@ export default class SourceContent extends Vue {
   protected duration = 0
 
   protected pagination = {
-    pageSize: 20,
+    pageSize: 30,
     currentPage: 1
   }
 
@@ -154,43 +156,76 @@ export default class SourceContent extends Vue {
   }
 
   protected handleChooseFiles () {
-    uni.chooseImage({
-      success: res => {
-        if (typeof res.tempFilePaths !== 'string') {
+    if (this.queryModel.file_type === 'picture') {
+      uni.chooseImage({
+        success: res => {
           this.loading = true
-          const uploadResult = {
-            success: [],
-            fail: [],
-            completed: 0,
-            total: res.tempFilePaths.length
-          }
-          res.tempFilePaths.forEach((path, index) => {
-            uniCloud.uploadFile({
-              filePath: path,
-              cloudPath: res.tempFiles[index].name,
-              onUploadProgress: (progress) => {
-                console.log('onUploadProgress', progress.loaded / progress.total * 100)
-              },
-              success: (result) => {
-                uploadResult.success.push({
-                  file_name: res.tempFiles[index].name,
-                  file_type: this.queryModel.file_type,
-                  categories: [this.categories._id].concat(this.categories.parent_ids),
-                  url: result.fileID
-                })
-                uploadResult.completed++
-                this.createSource(uploadResult)
-              },
-              fail: (error) => {
-                uploadResult.fail.push(error)
-                uploadResult.completed++
-                this.createSource(uploadResult)
-              }
+          if (typeof res.tempFilePaths !== 'string') {
+            const uploadResult = {
+              success: [],
+              fail: [],
+              completed: 0,
+              total: res.tempFilePaths.length
+            }
+            res.tempFilePaths.forEach((path, index) => {
+              uniCloud.uploadFile({
+                filePath: path,
+                cloudPath: res.tempFiles[index].name,
+                onUploadProgress: (progress) => {
+                  console.log('onUploadProgress', progress.loaded / progress.total * 100)
+                },
+                success: (result) => {
+                  uploadResult.success.push({
+                    file_name: res.tempFiles[index].name,
+                    file_type: this.queryModel.file_type,
+                    categories: [this.categories._id].concat(this.categories.parent_ids),
+                    url: result.fileID
+                  })
+                  uploadResult.completed++
+                  this.createSource(uploadResult)
+                },
+                fail: (error) => {
+                  uploadResult.fail.push(error)
+                  uploadResult.completed++
+                  this.createSource(uploadResult)
+                }
+              })
             })
+          }
+        }
+      })
+    } else if (this.queryModel.file_type === 'video') {
+      uni.chooseVideo({
+        success: res => {
+          this.loading = true
+          uniCloud.uploadFile({
+            filePath: res.tempFilePath,
+            cloudPath: res.tempFile.name,
+            fileType: 'video',
+            // onUploadProgress: ({ loaded, total }) => {},
+            success: (result) => {
+              const uploadResult = {
+                success: [],
+                fail: [],
+                completed: 0,
+                total: 1
+              }
+              uploadResult.success.push({
+                file_name: res.tempFile.name,
+                file_type: this.queryModel.file_type,
+                categories: [this.categories._id].concat(this.categories.parent_ids),
+                url: result.fileID
+              })
+              uploadResult.completed++
+              this.createSource(uploadResult)
+            },
+            fail: (error) => {
+              console.error(error)
+            }
           })
         }
-      }
-    })
+      })
+    }
   }
 
   protected async createSource (uploadResult) {
@@ -238,16 +273,26 @@ export default class SourceContent extends Vue {
     })
   }
 
-  protected async handleMove (categories: CategoriesNodeDate) {
-    this.loading = true
-    this.moveVisible = false
-    const res = await this.$jql.system.source.moveSources(this.checked, categories._id).finally(() => {
-      this.loading = false
+  protected handleMove (categories: CategoriesNodeDate) {
+    this.$confirm(`你确定要将选中素材移入“${categories.name}”分组中吗？`, '提示', {
+      type: 'info'
+    }).then(async () => {
+      this.loading = true
+      this.moveVisible = false
+      const res = await this.$jql.system.source.moveSources(this.checked, categories._id).finally(() => {
+        this.loading = false
+      })
+      if (!res.code) {
+        this.$message.success('已成功将选中素材移动到指定分组')
+        this.refresh()
+      }
+    }).catch(e => {
+      if (e === 'cancel') {
+        this.$message.info('取消删除')
+      } else {
+        throw e
+      }
     })
-    if (!res.code) {
-      this.$message.success('已成功将选中素材移动到指定分组')
-      this.refresh()
-    }
   }
 
   @Watch('categories')
@@ -280,6 +325,7 @@ export default class SourceContent extends Vue {
     padding: 5px 0;
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
     border-bottom: 1px solid #E8E8E8;
     overflow-y: auto;
     .content-upload {
