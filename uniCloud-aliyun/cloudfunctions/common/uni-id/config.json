@@ -3,9 +3,9 @@
 	"tokenSecret": "tokenSecret-demo",
 	"tokenExpiresIn": 7200,
 	"tokenExpiresThreshold": 600,
-	"passwordErrorLimit": -1,
+	"passwordErrorLimit": 6,
 	"bindTokenToDevice": true,
-	"passwordErrorRetryTime": -1,
+	"passwordErrorRetryTime": 3600,
 	"autoSetInviteCode": false,
 	"forceInviteCode": false,
 	"app-plus": {
@@ -14,6 +14,9 @@
 			"weixin" : {
 				"appid" : "weixin appid",
 				"appsecret" : "weixin appsecret"
+			},
+			"apple":	{
+				"bundleId": "your APP bundleId"
 			}
 		}
 	},
@@ -39,6 +42,11 @@
 			"codeExpiresIn": 300,
 			"smsKey": "your sms key",
 			"smsSecret": "your sms secret"
+		},
+		"univerify": {
+			"appid":"your appid",
+			"apiKey": "your apiKey",
+			"apiSecret": "your apiSecret"
 		}
 	}
 }

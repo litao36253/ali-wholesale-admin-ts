@@ -72,11 +72,17 @@ export const deleteSourceCategories = async (_id: string) => {
   const transaction = await db.startTransaction() // 发起事务
   try {
     const collection = db.collection('system-source-categories')
+
     await collection.doc(_id).remove()
+
     await collection.where({
-      // parent_ids: _id // parent_ids 中包含了 _id
-      parent_ids: dbCmd.elemMatch(dbCmd.eq(_id)) // parent_ids 中包含了 _id
+      parent_ids: dbCmd.elemMatch(dbCmd.eq(_id))
     }).remove()
+
+    await db.collection('system-source').where({
+      categories: dbCmd.elemMatch(dbCmd.eq(_id))
+    }).remove()
+
     return handleResult(transaction.commit()) // 提交事务
   } catch (e) {
     await transaction.rollback() // 回滚事务
