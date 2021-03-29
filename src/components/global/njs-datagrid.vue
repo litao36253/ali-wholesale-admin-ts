@@ -410,7 +410,9 @@ export default class NjsDatagrid extends Vue {
       this.tableData = result.data
       this.loading = false
       this.$nextTick(() => {
-        this.doLayout()
+        try {
+          this.doLayout()
+        } catch {}
       })
     }
   }

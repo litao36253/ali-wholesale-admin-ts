@@ -10,7 +10,6 @@ export default async (path, data?, options = { tips: true }) => {
       data
     }
   }).then(({ result }) => {
-    console.log(result)
     const errorCode = result?.code
     if (errorCode) {
       switch (+errorCode || errorCode) {
@@ -18,6 +17,7 @@ export default async (path, data?, options = { tips: true }) => {
           console.error(`请求 ${path} 入参错误`, result.message)
           break
         case 10001: // 会话过期
+          Message.error('token不合法，请重新登录')
           router.push({
             path: '/user/login',
             query: {

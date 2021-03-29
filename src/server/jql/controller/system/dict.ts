@@ -27,12 +27,14 @@ export const queryDict = async (param: { code?: string, name: string, type: stri
 
   const result = await handleResult(res, countRes)
 
-  result.data = result.data.map(item => {
-    item.last_reviser = item.last_reviser && item.last_reviser[0]
-    item.last_reviser_id = item.last_reviser?._id
-    item.last_reviser_username = item.last_reviser?.username
-    return item
-  })
+  if (!result.code) {
+    result.data = result.data.map(item => {
+      item.last_reviser = item.last_reviser && item.last_reviser[0]
+      item.last_reviser_id = item.last_reviser?._id
+      item.last_reviser_username = item.last_reviser?.username
+      return item
+    })
+  }
 
   return result
 }

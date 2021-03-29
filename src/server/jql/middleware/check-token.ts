@@ -10,7 +10,6 @@ export default async () => {
         redirect: router.currentRoute.fullPath
       }
     })
-    throw tokenResult
   }
   return tokenResult
 }
