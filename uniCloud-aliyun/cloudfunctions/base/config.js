@@ -8,7 +8,7 @@ module.exports = {
   middleware: [ // 自定义中间件
     [
       auth(),
-      { enable: true, ignore: /^uniID\/(login|register)$/ }
+      { enable: true, ignore: /^uniID\/(login|register|checkToken)$/ }
     ],
     [
       validate(),

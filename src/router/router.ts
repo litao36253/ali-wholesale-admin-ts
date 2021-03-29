@@ -39,7 +39,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       const token = uni.getStorageSync('uni_id_token')
       if (token) {
-        const tokenResult = await baseServer(baseApi.apiCheckToken)
+        const tokenResult = await baseServer(baseApi.userCheckToken)
         if (tokenResult.code) {
           next({
             path: '/user/login',

@@ -43,6 +43,12 @@ module.exports = class uniIDController extends Controller {
     return await uniID.checkToken(this.ctx.event.uniIdToken)
   }
 
+  async getUserInfo () {
+    return await uniID.getUserInfo({
+      uid: '5fff105ad06eec000127c4e4'
+    })
+  }
+
   // 登出
   async logout () {
     return await uniID.logout(this.ctx.event.uniIdToken)

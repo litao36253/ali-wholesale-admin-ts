@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     handleLogin () {
-      baseServer(baseApi.apiRegister, this.formModel).then(res => {
+      baseServer(baseApi.userRegister, this.formModel).then(res => {
         console.log(res)
       })
     }

@@ -1,11 +1,14 @@
 // 登录
-export const apiLogin = 'uniID/login'
+export const userLogin = 'uniID/login'
 
 // 注册
-export const apiRegister = 'uniID/register'
+export const userRegister = 'uniID/register'
 
 // 校验token
-export const apiCheckToken = 'uniID/checkToken'
+export const userCheckToken = 'uniID/checkToken'
 
 // 登出
-export const apiLogout = 'uniID/logout'
+export const userLogout = 'uniID/logout'
+
+// 获取用户信息
+export const getUserInfo = 'uniID/getUserInfo'

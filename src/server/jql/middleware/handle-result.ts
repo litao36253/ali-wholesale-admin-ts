@@ -1,8 +1,10 @@
 import { Message } from 'element-ui'
 import { Result } from '@/server/jql/types'
+import checkToken from './check-token'
 
 export default async (res: Promise<any>, countRes?: Promise<any>): Promise<Result> => {
   const start = new Date().getTime()
+  await checkToken()
   return Promise.all([res, countRes]).then(([res, countRes]) => {
     const result = res.result
     if (result.code) {

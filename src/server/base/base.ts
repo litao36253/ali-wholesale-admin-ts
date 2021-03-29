@@ -10,6 +10,7 @@ export default async (path, data?, options = { tips: true }) => {
       data
     }
   }).then(({ result }) => {
+    console.log(result)
     const errorCode = result?.code
     if (errorCode) {
       switch (+errorCode || errorCode) {
@@ -28,10 +29,8 @@ export default async (path, data?, options = { tips: true }) => {
           options.tips && Message.error(result.message)
       }
     } else {
-      if (path === api.apiLogin || path === api.apiRegister) {
-        uni.setStorageSync('uni_id_token', result.token)
-        uni.setStorageSync('tokenExpired', result.tokenExpired)
-      }
+      result.token && uni.setStorageSync('uni_id_token', result.token)
+      result.tokenExpired && uni.setStorageSync('tokenExpired', result.tokenExpired)
     }
     return result
   }).catch(() => {

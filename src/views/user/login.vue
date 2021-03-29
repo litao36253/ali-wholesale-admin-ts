@@ -46,7 +46,7 @@ export default {
       this.$refs.form.validate(async validateResult => {
         if (validateResult) {
           this.loading = true
-          const res = await baseServer(baseApi.apiLogin, this.formModel)
+          const res = await baseServer(baseApi.userLogin, this.formModel)
           if (res.code) { // 登录失败
             this.loading = false
             return

@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     logout () {
-      baseServer(baseApi.apiLogout)
+      baseServer(baseApi.userLogout)
     }
   }
 }
