@@ -66,5 +66,18 @@
     },
     "mp-qq" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {}
+        },
+        "router" : {
+            "mode" : "hash"
+        },
+        "devServer" : {
+            "https" : false
+        },
+        "title" : "阿里零售通测试",
+        "domain" : "static-9f54e33b-2133-4558-a743-b5b6642ef564.bspapp.com"
     }
 }

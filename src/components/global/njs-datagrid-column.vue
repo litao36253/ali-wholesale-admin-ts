@@ -1,18 +1,64 @@
 <template>
-  <el-table-column v-if="showColum" :type="type" :prop="prop" :index="index" :column-key="columnKey" :width="width" :min-width="minWidth" :fixed="fixed" :render-header="renderHeader" :sortable="sortable" :sort-method="sortMethod" :sort-by="sortBy" :sort-orders="sortOrders" :resizable="resizable" :formatter="realFormatter" :show-overflow-tooltip="showOverflowTooltip" :align="align" :header-align="headerAlign" :class-name="className" :label-class-name="labelClassName" :selectable="selectable" :reserve-selection="reserveSelection" :filters="filters" :filter-placement="filterPlacement" :filter-multiple="filterMultiple" :filter-method="filterMethod" :filtered-value="filteredValue">
+  <el-table-column
+    v-if="showColum"
+    :type="type"
+    :prop="prop"
+    :index="index"
+    :column-key="columnKey"
+    :width="width"
+    :min-width="minWidth"
+    :fixed="fixed"
+    :render-header="renderHeader"
+    :sortable="sortable"
+    :sort-method="sortMethod"
+    :sort-by="sortBy"
+    :sort-orders="sortOrders"
+    :resizable="resizable"
+    :formatter="realFormatter"
+    :show-overflow-tooltip="showOverflowTooltip"
+    :align="align"
+    :header-align="headerAlign"
+    :class-name="className"
+    :label-class-name="labelClassName"
+    :selectable="selectable"
+    :reserve-selection="reserveSelection"
+    :filters="filters"
+    :filter-placement="filterPlacement"
+    :filter-multiple="filterMultiple"
+    :filter-method="filterMethod"
+    :filtered-value="filteredValue"
+  >
     <template v-slot="{ row, column, $index }">
       <template v-if="type === 'state'">
-        <el-tag :type="stateMap[row[prop]]" size="medium">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
+        <el-tag :type="stateMap[row[prop]]" size="medium">{{
+          realFormatter(row, column, row[prop], $index)
+        }}</el-tag>
       </template>
-      <template v-else-if="type === 'time'">{{ row[prop] ? moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') : row[prop] }}</template>
+      <template v-else-if="type === 'time'">{{
+        row[prop] ? moment(row[prop]).format('yyyy-MM-DD HH:mm:ss') : row[prop]
+      }}</template>
       <template v-else-if="type === 'color'">
-        <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{ realFormatter(row,column,row[prop],$index) }}</el-tag>
+        <el-tag :color="row[prop]" size="medium" v-if="row[prop]">{{
+          realFormatter(row, column, row[prop], $index)
+        }}</el-tag>
       </template>
-      <slot v-else-if="$scopedSlots['default']" :row="row" :column="column" :$index="$index"></slot>
-      <template v-else>{{ realFormatter(row,column,row[prop],$index) }}</template>
+      <slot
+        v-else-if="$scopedSlots['default']"
+        :row="row"
+        :column="column"
+        :$index="$index"
+      ></slot>
+      <template v-else>{{
+        realFormatter(row, column, row[prop], $index)
+      }}</template>
     </template>
     <template v-slot:header="{ column, $index }">
-      <slot v-if="$scopedSlots['header']" name="header" :column="column" :$index="$index"></slot>
+      <slot
+        v-if="$scopedSlots['header']"
+        name="header"
+        :column="column"
+        :$index="$index"
+      ></slot>
       <template v-else>{{ label }}</template>
     </template>
   </el-table-column>
@@ -72,17 +118,21 @@ export default {
         return ['ascending', 'descending', null]
       },
       validator (val) {
-        return val.every(order => ['ascending', 'descending', null].indexOf(order) > -1)
+        return val.every(
+          order => ['ascending', 'descending', null].indexOf(order) > -1
+        )
       }
     },
-    stateMap: { // 若type的值为state则需要指定几种状态对应的值。系统中目前提供了五种状态。
+    stateMap: {
+      // 若type的值为state则需要指定几种状态对应的值。系统中目前提供了五种状态。
       type: Object,
       default () {
         return {}
       }
     },
     dict: String, // ucc中的数据字典
-    hide: { // 初始状态是否隐藏该列
+    hide: {
+      // 初始状态是否隐藏该列
       type: Boolean,
       default: false
     }
@@ -91,7 +141,12 @@ export default {
     realFormatter (row, column, cellValue, index) {
       if (this.formatter) {
         if (this.dict) {
-          return this.formatter(row, column, this.$utils.getDict(this.dict, cellValue), index)
+          return this.formatter(
+            row,
+            column,
+            this.$utils.getDict(this.dict, cellValue),
+            index
+          )
         } else {
           return this.formatter(row, column, cellValue, index)
         }
@@ -120,9 +175,11 @@ export default {
     moment
   },
   computed: {
-    showColum () { // 计算此列是否显示
+    showColum () {
+      // 计算此列是否显示
       if (this.prop) {
-        return this.getShowColumns().includes(this.prop)
+        const showColumns = this.getShowColumns ? this.getShowColumns() : []
+        return showColumns.includes(this.prop)
       } else {
         return true
       }
@@ -131,5 +188,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
