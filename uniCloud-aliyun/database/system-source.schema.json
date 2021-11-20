@@ -2,7 +2,7 @@
 
 {
 	"bsonType": "object",
-	"required": ["name", "file_type", "url"],
+	"required": ["name", "url"],
 	"permission": {
 		"read": false,
 		"create": false,

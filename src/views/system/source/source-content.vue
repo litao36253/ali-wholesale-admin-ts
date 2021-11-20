@@ -1,17 +1,49 @@
 <template>
   <div v-loading="loading" class="source-content">
     <el-form :model="queryModel" size="small" class="source-query" inline>
-      <el-form-item prop="file_type">
-        <el-radio-group v-model="queryModel.file_type" dict="file_type" auto-create-button @change="refresh"></el-radio-group>
-      </el-form-item>
+      <!-- <el-form-item prop="file_type">
+        <el-radio-group
+          v-model="queryModel.file_type"
+          dict="file_type"
+          auto-create-button
+          @change="refresh"
+        ></el-radio-group>
+      </el-form-item> -->
       <el-form-item prop="file_name">
-        <el-input v-model="queryModel.file_name" suffix-icon="el-icon-search" placeholder="输入文件名搜索" clearable @keydown.native.13="refresh" @clear="refresh"></el-input>
+        <el-input
+          v-model="queryModel.file_name"
+          suffix-icon="el-icon-search"
+          placeholder="输入文件名搜索"
+          clearable
+          @keydown.native.13="refresh"
+          @clear="refresh"
+        ></el-input>
       </el-form-item>
       <el-form-item class="operation">
-        <el-checkbox v-model="checkedAll" :indeterminate="indeterminate" :disabled="!data.length" label="全选" class="margin-right"></el-checkbox>
-        <el-button type="danger" :disabled="!checked.length" class="margin-right" @click="handleDelete(checked)">批量删除</el-button>
-        <el-popover v-model="moveVisible" :disabled="!checked.length" placement="bottom" width="240" trigger="click">
-          <el-button slot="reference" type="primary" :disabled="!checked.length">移动至<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+        <el-checkbox
+          v-model="checkedAll"
+          :indeterminate="indeterminate"
+          :disabled="!data.length"
+          label="全选"
+          class="margin-right"
+        ></el-checkbox>
+        <el-button
+          type="danger"
+          :disabled="!checked.length"
+          class="margin-right"
+          @click="handleDelete(checked)"
+          >批量删除</el-button
+        >
+        <el-popover
+          v-model="moveVisible"
+          :disabled="!checked.length"
+          placement="bottom"
+          width="240"
+          trigger="click"
+        >
+          <el-button slot="reference" type="primary" :disabled="!checked.length"
+            >移动至<i class="el-icon-arrow-down el-icon--right"></i
+          ></el-button>
           <el-tree
             v-if="moveVisible"
             ref="tree"
@@ -39,12 +71,23 @@
           <i class="el-icon-upload"></i>
         </div>
       </div>
-      <div v-for="item in data" :key="item._id" class="content-item" :class="{checked: checked.includes(item._id)}" @click="handleChecked(item)">
+      <div
+        v-for="item in data"
+        :key="item._id"
+        class="content-item"
+        :class="{ checked: checked.includes(item._id) }"
+        @click="handleChecked(item)"
+      >
         <el-tooltip :content="item.file_name" placement="top">
           <div>
-            <img v-if="item.file_type === 'picture'" :src="item.url" class="item-content"/>
-            <!-- <video v-else-if="item.file_type === 'video'" :id="item.url" :src="item.url" class="item-content"></video> -->
-            <div v-else-if="item.file_type === 'video'" class="item-content">视频暂不支持预览</div>
+            <!-- <img
+              v-if="item.file_type === 'picture'"
+              :src="item.url"
+              class="item-content"
+            /> -->
+            <div class="item-content">
+              视频暂不支持预览
+            </div>
             <div class="title">{{ item.file_name }}</div>
           </div>
         </el-tooltip>
@@ -52,16 +95,34 @@
     </div>
     <div class="content-foot">
       <div class="content-page-info">
-          <span>共 {{ total }} 条 / 耗时 {{ duration }}s</span>
-          <span class="content-page-size">
-            <span>每页</span>
-            <el-select v-model="pagination.pageSize" size="mini" :clearable="false" class="pagination-select" @change="handlePageSizeChange">
-              <el-option v-for="item in pageSizes" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
-            <span>条</span>
+        <span>共 {{ total }} 条 / 耗时 {{ duration }}s</span>
+        <span class="content-page-size">
+          <span>每页</span>
+          <el-select
+            v-model="pagination.pageSize"
+            size="mini"
+            :clearable="false"
+            class="pagination-select"
+            @change="handlePageSizeChange"
+          >
+            <el-option
+              v-for="item in pageSizes"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
+          <span>条</span>
         </span>
       </div>
-      <el-pagination :total="total" :current-page.sync="pagination.currentPage" :page-size="pagination.pageSize" background="background" layout="prev, pager, next, jumper" @current-change="handleCurrentChange"></el-pagination>
+      <el-pagination
+        :total="total"
+        :current-page.sync="pagination.currentPage"
+        :page-size="pagination.pageSize"
+        background="background"
+        layout="prev, pager, next, jumper"
+        @current-change="handleCurrentChange"
+      ></el-pagination>
     </div>
   </div>
 </template>
@@ -129,12 +190,17 @@ export default class SourceContent extends Vue {
   protected async refresh () {
     this.loading = true
     this.moveVisible = false
-    const res = await this.$jql.system.source.querySource({
-      ...this.queryModel,
-      categories: this.categories._id
-    }, this.pagination).finally(() => {
-      this.loading = false
-    })
+    const res = await this.$jql.system.source
+      .querySource(
+        {
+          ...this.queryModel,
+          categories: this.categories._id
+        },
+        this.pagination
+      )
+      .finally(() => {
+        this.loading = false
+      })
     if (!res.code) {
       this.total = res.total
       this.duration = res.duration
@@ -156,88 +222,67 @@ export default class SourceContent extends Vue {
   }
 
   protected handleChooseFiles () {
-    if (this.queryModel.file_type === 'picture') {
-      uni.chooseImage({
-        success: res => {
-          this.loading = true
-          if (typeof res.tempFilePaths !== 'string') {
-            const uploadResult = {
-              success: [],
-              fail: [],
-              completed: 0,
-              total: res.tempFilePaths.length
-            }
-            res.tempFilePaths.forEach((path, index) => {
-              uniCloud.uploadFile({
-                filePath: path,
-                cloudPath: res.tempFiles[index].name,
-                onUploadProgress: (progress) => {
-                  console.log('onUploadProgress', progress.loaded / progress.total * 100)
-                },
-                success: (result) => {
-                  uploadResult.success.push({
-                    file_name: res.tempFiles[index].name,
-                    file_type: this.queryModel.file_type,
-                    categories: [this.categories._id].concat(this.categories.parent_ids),
-                    url: result.fileID
-                  })
-                  uploadResult.completed++
-                  this.createSource(uploadResult)
-                },
-                fail: (error) => {
-                  uploadResult.fail.push(error)
-                  uploadResult.completed++
-                  this.createSource(uploadResult)
-                }
-              })
-            })
+    uni.chooseFile({
+      success: res => {
+        this.loading = true
+        if (typeof res.tempFilePaths !== 'string') {
+          const uploadResult = {
+            success: [],
+            fail: [],
+            completed: 0,
+            total: res.tempFilePaths.length
           }
-        }
-      })
-    } else if (this.queryModel.file_type === 'video') {
-      uni.chooseVideo({
-        success: res => {
-          this.loading = true
-          uniCloud.uploadFile({
-            filePath: res.tempFilePath,
-            cloudPath: res.tempFile.name,
-            fileType: 'video',
-            // onUploadProgress: ({ loaded, total }) => {},
-            success: (result) => {
-              const uploadResult = {
-                success: [],
-                fail: [],
-                completed: 0,
-                total: 1
+          res.tempFilePaths.forEach((path, index) => {
+            uniCloud.uploadFile({
+              filePath: path,
+              cloudPath: res.tempFiles[index].name,
+              onUploadProgress: progress => {
+                console.log(
+                  'onUploadProgress',
+                  (progress.loaded / progress.total) * 100
+                )
+              },
+              success: result => {
+                uploadResult.success.push({
+                  file_name: res.tempFiles[index].name,
+                  // file_type: this.queryModel.file_type,
+                  categories: [this.categories._id].concat(
+                    this.categories.parent_ids
+                  ),
+                  url: result.fileID
+                })
+                uploadResult.completed++
+                this.createSource(uploadResult)
+              },
+              fail: error => {
+                uploadResult.fail.push(error)
+                uploadResult.completed++
+                this.createSource(uploadResult)
               }
-              uploadResult.success.push({
-                file_name: res.tempFile.name,
-                file_type: this.queryModel.file_type,
-                categories: [this.categories._id].concat(this.categories.parent_ids),
-                url: result.fileID
-              })
-              uploadResult.completed++
-              this.createSource(uploadResult)
-            },
-            fail: (error) => {
-              console.error(error)
-            }
+            })
           })
         }
-      })
-    }
+      }
+    })
   }
 
   protected async createSource (uploadResult) {
     if (uploadResult.completed === uploadResult.total) {
-      const res = await this.$jql.system.source.createSource(uploadResult.success).finally(() => {
-        this.loading = false
-      })
+      const res = await this.$jql.system.source
+        .createSource(uploadResult.success)
+        .finally(() => {
+          this.loading = false
+        })
       if (!res.code) {
         if (uploadResult.success.length === uploadResult.total) {
           this.$message.success('上传素材成功！')
         } else {
-          this.$message.error(`共上传 ${uploadResult.total} 个素材，其中 ${uploadResult.success.length} 个成功，${uploadResult.total - uploadResult.success.length} 个失败！`)
+          this.$message.error(
+            `共上传 ${uploadResult.total} 个素材，其中 ${
+              uploadResult.success.length
+            } 个成功，${uploadResult.total -
+              uploadResult.success.length} 个失败！`
+          )
         }
         this.refresh()
       }
@@ -253,46 +298,64 @@ export default class SourceContent extends Vue {
   }
 
   protected handleDelete (checked: string | string[]) {
-    this.$confirm(typeof checked === 'string' ? '你确定要删除该素材吗？' : '你确定要删除选中素材吗？', '提示', {
-      type: 'warning'
-    }).then(async () => {
-      this.loading = true
-      const res = await this.$jql.system.source.deleteSource(checked).finally(() => {
-        this.loading = false
+    this.$confirm(
+      typeof checked === 'string'
+        ? '你确定要删除该素材吗？'
+        : '你确定要删除选中素材吗？',
+      '提示',
+      {
+        type: 'warning'
+      }
+    )
+      .then(async () => {
+        this.loading = true
+        const res = await this.$jql.system.source
+          .deleteSource(checked)
+          .finally(() => {
+            this.loading = false
+          })
+        if (!res.code) {
+          this.$message.success('删除素材成功')
+          this.refresh()
+        }
       })
-      if (!res.code) {
-        this.$message.success('删除素材成功')
-        this.refresh()
-      }
-    }).catch(e => {
-      if (e === 'cancel') {
-        this.$message.info('取消删除')
-      } else {
-        throw e
-      }
-    })
+      .catch(e => {
+        if (e === 'cancel') {
+          this.$message.info('取消删除')
+        } else {
+          throw e
+        }
+      })
   }
 
   protected handleMove (categories: CategoriesNodeDate) {
-    this.$confirm(`你确定要将选中素材移入“${categories.name}”分组中吗？`, '提示', {
-      type: 'info'
-    }).then(async () => {
-      this.loading = true
-      this.moveVisible = false
-      const res = await this.$jql.system.source.moveSources(this.checked, categories._id).finally(() => {
-        this.loading = false
+    this.$confirm(
+      `你确定要将选中素材移入“${categories.name}”分组中吗？`,
+      '提示',
+      {
+        type: 'info'
+      }
+    )
+      .then(async () => {
+        this.loading = true
+        this.moveVisible = false
+        const res = await this.$jql.system.source
+          .moveSources(this.checked, categories._id)
+          .finally(() => {
+            this.loading = false
+          })
+        if (!res.code) {
+          this.$message.success('已成功将选中素材移动到指定分组')
+          this.refresh()
+        }
       })
-      if (!res.code) {
-        this.$message.success('已成功将选中素材移动到指定分组')
-        this.refresh()
-      }
-    }).catch(e => {
-      if (e === 'cancel') {
-        this.$message.info('取消删除')
-      } else {
-        throw e
-      }
-    })
+      .catch(e => {
+        if (e === 'cancel') {
+          this.$message.info('取消删除')
+        } else {
+          throw e
+        }
+      })
   }
 
   @Watch('categories')
@@ -310,7 +373,7 @@ export default class SourceContent extends Vue {
   padding-right: 20px;
   .source-query {
     flex: none;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid #e8e8e8;
     .operation {
       float: right;
       .margin-right {
@@ -326,7 +389,7 @@ export default class SourceContent extends Vue {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid #e8e8e8;
     overflow-y: auto;
     .content-upload {
       box-sizing: content-box;
@@ -385,7 +448,7 @@ export default class SourceContent extends Vue {
     .content-page-info {
       .content-page-size {
         padding-left: 6px;
-        >span {
+        > span {
           padding: 0 6px;
         }
         .pagination-select {

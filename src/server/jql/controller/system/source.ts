@@ -100,8 +100,8 @@ export const querySource = async (param: { file_name: string, file_type: string,
   const collection = db.collection('system-source')
   const query = {
     categories: dbCmd.elemMatch(dbCmd.eq(param.categories)),
-    file_name: new RegExp(param.file_name, 'i'),
-    file_type: param.file_type
+    file_name: new RegExp(param.file_name, 'i')
+    // file_type: param.file_type
   }
   const res = collection.where(query)
     .skip(pagination.pageSize * (pagination.currentPage - 1))

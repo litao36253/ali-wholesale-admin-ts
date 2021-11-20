@@ -1,5 +1,9 @@
 <template>
-  <TreeManage v-loading="loading" side-title="素材分类" :body-title="categories.name">
+  <TreeManage
+    v-loading="loading"
+    side-title="文件分类"
+    :body-title="categories.name"
+  >
     <template v-slot:side-content>
       <SourceCategories
         @delete-before="loading = true"
@@ -9,7 +13,7 @@
     </template>
 
     <template v-slot:body-content>
-      <SourceContent :categories="categories"/>
+      <SourceContent :categories="categories" />
     </template>
   </TreeManage>
 </template>
@@ -27,7 +31,7 @@ import SourceContent from './source-content.vue'
 export default class Source extends Vue {
   protected loading = false
 
-  protected categories = { _id: '0', parent_ids: [], name: '全部素材' }
+  protected categories = { _id: '0', parent_ids: [], name: '全部文件' }
 
   protected handleCurrentChange (data) {
     this.categories = data
